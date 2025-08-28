@@ -1,0 +1,7 @@
+motor
+uvicorn
+beanie
+fastapi
+pydantic
+pydantic-settings
+beanie[srv]
