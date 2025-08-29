@@ -27,7 +27,7 @@ echo -e "\n📋 Step 3: Checking code formatting (black)..."
 if black --check --diff --line-length=127 .; then
     echo -e "${GREEN}✅ Code formatting is correct${NC}"
 else
-    echo -e "${YELLOW}⚠️  Code formatting suggestions available (run: black --line-length=127 .)${NC}"
+    echo -e "${YELLOW}⚠️  Code formatting suggestions available (run: black .)${NC}"
 fi
 
 echo -e "\n📋 Step 4: Checking import sorting (isort)..."

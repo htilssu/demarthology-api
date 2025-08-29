@@ -42,13 +42,25 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Check code formatting with black (informational)
+    - name: Apply code formatting with black
       run: |
-        black --check --diff --line-length=127 . || echo "Black formatting suggestions available but not enforced yet"
+        black --line-length=127 .
 
-    - name: Check import sorting with isort (informational)
+    - name: Apply import sorting with isort
       run: |
-        isort --check-only --diff . || echo "Import sorting suggestions available but not enforced yet"
+        isort .
+
+    - name: Commit and push formatting changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        if git diff --staged --quiet; then
+          echo "No formatting changes to commit"
+        else
+          git commit -m "Auto-fix: Apply code formatting and import sorting"
+          git push
+        fi
 
     - name: Run tests with unittest
       run: |

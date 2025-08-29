@@ -27,23 +27,20 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
         # Arrange
         test_password = "testpassword123"
         hashed_password = hash_password(test_password)
-        
+
         mock_user = MagicMock(spec=User)
         mock_user.email = "test@example.com"
         mock_user.password = hashed_password
         mock_user.first_name = "John"
         mock_user.last_name = "Doe"
-        
+
         self.mock_user_repository.find_by_email.return_value = mock_user
-        
-        login_request = LoginRequest(
-            email="test@example.com",
-            password=test_password
-        )
-        
+
+        login_request = LoginRequest(email="test@example.com", password=test_password)
+
         # Act
         result = await self.login_uc.action(login_request)
-        
+
         # Assert
         self.assertTrue(result["success"])
         self.assertEqual(result["message"], "Login successful")
@@ -56,16 +53,13 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
         """Test login with non-existent user."""
         # Arrange
         self.mock_user_repository.find_by_email.return_value = None
-        
-        login_request = LoginRequest(
-            email="nonexistent@example.com",
-            password="anypassword"
-        )
-        
+
+        login_request = LoginRequest(email="nonexistent@example.com", password="anypassword")
+
         # Act & Assert
         with self.assertRaises(HTTPException) as context:
             await self.login_uc.action(login_request)
-        
+
         self.assertEqual(context.exception.status_code, 401)
         self.assertEqual(context.exception.detail, "Invalid credentials")
 
@@ -75,24 +69,21 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
         correct_password = "correctpassword"
         wrong_password = "wrongpassword"
         hashed_password = hash_password(correct_password)
-        
+
         mock_user = MagicMock(spec=User)
         mock_user.email = "test@example.com"
         mock_user.password = hashed_password
         mock_user.first_name = "John"
         mock_user.last_name = "Doe"
-        
+
         self.mock_user_repository.find_by_email.return_value = mock_user
-        
-        login_request = LoginRequest(
-            email="test@example.com",
-            password=wrong_password
-        )
-        
+
+        login_request = LoginRequest(email="test@example.com", password=wrong_password)
+
         # Act & Assert
         with self.assertRaises(HTTPException) as context:
             await self.login_uc.action(login_request)
-        
+
         self.assertEqual(context.exception.status_code, 401)
         self.assertEqual(context.exception.detail, "Invalid credentials")
 

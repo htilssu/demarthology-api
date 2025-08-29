@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Generic, TypeVar, Type
+from typing import Generic, Type, TypeVar
 
 from app.errors.not_found import NotFoundException
 from app.models.base import Base
