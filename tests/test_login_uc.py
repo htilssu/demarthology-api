@@ -37,7 +37,7 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
         self.mock_user_repository.find_by_email.return_value = mock_user
         
         login_request = LoginRequest(
-            username="test@example.com",
+            email="test@example.com",
             password=test_password
         )
         
@@ -58,7 +58,7 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
         self.mock_user_repository.find_by_email.return_value = None
         
         login_request = LoginRequest(
-            username="nonexistent@example.com",
+            email="nonexistent@example.com",
             password="anypassword"
         )
         
@@ -85,7 +85,7 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
         self.mock_user_repository.find_by_email.return_value = mock_user
         
         login_request = LoginRequest(
-            username="test@example.com",
+            email="test@example.com",
             password=wrong_password
         )
         
