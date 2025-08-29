@@ -15,16 +15,12 @@ class TestRegisterResponseSchema(unittest.TestCase):
         """Test RegisterResponse model creation."""
         # Arrange
         user_info = UserInfo(
-            email="test@example.com",
-            first_name="John",
-            last_name="Doe"
+            email="test@example.com", first_name="John", last_name="Doe"
         )
 
         # Act
         response = RegisterResponse(
-            success=True,
-            message="Registration successful",
-            user=user_info
+            success=True, message="Registration successful", user=user_info
         )
 
         # Assert
@@ -38,14 +34,10 @@ class TestRegisterResponseSchema(unittest.TestCase):
         """Test that RegisterResponse can be serialized to JSON for middleware."""
         # Arrange
         user_info = UserInfo(
-            email="jane@example.com",
-            first_name="Jane",
-            last_name="Smith"
+            email="jane@example.com", first_name="Jane", last_name="Smith"
         )
         response = RegisterResponse(
-            success=True,
-            message="User registered successfully",
-            user=user_info
+            success=True, message="User registered successfully", user=user_info
         )
 
         # Act
@@ -58,8 +50,8 @@ class TestRegisterResponseSchema(unittest.TestCase):
             "user": {
                 "email": "jane@example.com",
                 "first_name": "Jane",
-                "last_name": "Smith"
-            }
+                "last_name": "Smith",
+            },
         }
         self.assertEqual(serialized, expected)
 

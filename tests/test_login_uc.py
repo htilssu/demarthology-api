@@ -29,6 +29,7 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
         hashed_password = hash_password(test_password)
 
         mock_user = MagicMock(spec=User)
+        mock_user.id = "user123"
         mock_user.email = "test@example.com"
         mock_user.password = hashed_password
         mock_user.first_name = "John"
@@ -47,6 +48,8 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result.user.email, "test@example.com")
         self.assertEqual(result.user.first_name, "John")
         self.assertEqual(result.user.last_name, "Doe")
+        self.assertIsNotNone(result.access_token)
+        self.assertEqual(result.token_type, "bearer")
         self.mock_user_service.find_by_email.assert_called_once_with("test@example.com")
 
     async def test_login_user_not_found(self):

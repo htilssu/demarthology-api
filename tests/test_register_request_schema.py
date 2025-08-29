@@ -22,7 +22,7 @@ class TestRegisterRequestSchema(unittest.TestCase):
             "confirm_password": "testpassword123",
             "first_name": "John",
             "last_name": "Doe",
-            "dob": datetime(1990, 1, 1)
+            "dob": datetime(1990, 1, 1),
         }
 
         # Act
@@ -42,10 +42,10 @@ class TestRegisterRequestSchema(unittest.TestCase):
         request_data = {
             "email": "test@example.com",
             "password": "password123",
-            "confirm_password": "password123", 
+            "confirm_password": "password123",
             "first_name": "Jane",
             "last_name": "Smith",
-            "dob": datetime(1995, 6, 15)
+            "dob": datetime(1995, 6, 15),
         }
         request = RegisterRequest(**request_data)
 
@@ -75,10 +75,10 @@ class TestRegisterRequestSchema(unittest.TestCase):
             "confirm_password": "password123",
             "first_name": "John",
             "last_name": "Doe",
-            "dob": datetime(1990, 1, 1)
+            "dob": datetime(1990, 1, 1),
         }
 
-        # Act & Assert  
+        # Act & Assert
         # Note: This test might pass if we're using str instead of EmailStr
         # That's fine for now - we can add email validation later if needed
         try:

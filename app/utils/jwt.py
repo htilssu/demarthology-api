@@ -1,0 +1,39 @@
+from datetime import datetime, timedelta, timezone
+from typing import Dict, Any
+
+import jwt
+from fastapi import HTTPException, status
+
+
+class JWTUtils:
+    """JWT utility class for token creation and validation."""
+
+    SECRET_KEY = "your-secret-key-change-in-production"  # Should be in settings
+    ALGORITHM = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+    @classmethod
+    def create_access_token(cls, data: Dict[str, Any]) -> str:
+        """Create a JWT access token."""
+        to_encode = data.copy()
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=cls.ACCESS_TOKEN_EXPIRE_MINUTES
+        )
+        to_encode.update({"exp": expire})
+
+        return jwt.encode(to_encode, cls.SECRET_KEY, algorithm=cls.ALGORITHM)
+
+    @classmethod
+    def decode_access_token(cls, token: str) -> Dict[str, Any]:
+        """Decode and validate a JWT access token."""
+        try:
+            payload = jwt.decode(token, cls.SECRET_KEY, algorithms=[cls.ALGORITHM])
+            return payload
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired"
+            )
+        except jwt.InvalidTokenError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+            )

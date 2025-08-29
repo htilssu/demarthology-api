@@ -6,6 +6,7 @@ from app.schemas.login_request import LoginRequest
 from app.schemas.login_response import LoginResponse, UserInfo
 from app.use_cases.usecase import UseCase
 from app.utils.password import verify_password
+from app.utils.jwt import JWTUtils
 
 
 class LoginUC(UseCase):
@@ -29,8 +30,17 @@ class LoginUC(UseCase):
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
             )
 
-        # Return success response
+        # Create access token
+        token_data = {"email": user.email, "user_id": str(user.id)}
+        access_token = JWTUtils.create_access_token(token_data)
+
+        # Return success response with token
         user_info = UserInfo(
             email=user.email, first_name=user.first_name, last_name=user.last_name
         )
-        return LoginResponse(success=True, message="Login successful", user=user_info)
+        return LoginResponse(
+            success=True,
+            message="Login successful",
+            user=user_info,
+            access_token=access_token,
+        )
