@@ -8,7 +8,7 @@ from app.configs.setting import setting
 from app.models.user import User
 
 client = AsyncIOMotorClient(setting.MONGO_URI)
-logger = Logger('mongodb')
+logger = Logger("mongodb")
 
 
 async def init_db():

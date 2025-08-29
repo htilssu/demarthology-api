@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from beanie import Document, before_event, ValidateOnSave
+from beanie import Document, ValidateOnSave, before_event
 
 
 class Base(Document):
