@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from app.models.base import Base
+from app.models.role import Role
 
 
 class User(Base):
