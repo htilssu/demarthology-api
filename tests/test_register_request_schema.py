@@ -18,7 +18,7 @@ class TestRegisterRequestSchema(unittest.TestCase):
         # Arrange
         request_data = {
             "email": "test@example.com",
-            "password": "testpassword123",
+            "password": "TestPassword123!",  # Valid password with all requirements
             "first_name": "John",
             "last_name": "Doe",
             "dob": datetime(1990, 1, 1),
@@ -29,7 +29,7 @@ class TestRegisterRequestSchema(unittest.TestCase):
 
         # Assert
         self.assertEqual(request.email, "test@example.com")
-        self.assertEqual(request.password, "testpassword123")
+        self.assertEqual(request.password, "TestPassword123!")
         self.assertEqual(request.first_name, "John")
         self.assertEqual(request.last_name, "Doe")
         self.assertEqual(request.dob, datetime(1990, 1, 1))
@@ -39,7 +39,7 @@ class TestRegisterRequestSchema(unittest.TestCase):
         # Arrange
         request_data = {
             "email": "test@example.com",
-            "password": "password123",
+            "password": "Password123!",  # Valid password with all requirements
             "first_name": "Jane",
             "last_name": "Smith",
             "dob": datetime(1995, 6, 15),
@@ -51,7 +51,7 @@ class TestRegisterRequestSchema(unittest.TestCase):
 
         # Assert
         self.assertEqual(serialized["email"], "test@example.com")
-        self.assertEqual(serialized["password"], "password123")
+        self.assertEqual(serialized["password"], "Password123!")
         self.assertEqual(serialized["first_name"], "Jane")
         self.assertEqual(serialized["last_name"], "Smith")
         self.assertEqual(serialized["dob"], datetime(1995, 6, 15))
@@ -67,22 +67,16 @@ class TestRegisterRequestSchema(unittest.TestCase):
         # Arrange
         request_data = {
             "email": "invalid-email",
-            "password": "password123",
+            "password": "Password123!",  # Valid password
             "first_name": "John",
             "last_name": "Doe",
             "dob": datetime(1990, 1, 1),
         }
 
         # Act & Assert
-        # Note: This test might pass if we're using str instead of EmailStr
-        # That's fine for now - we can add email validation later if needed
-        try:
-            request = RegisterRequest(**request_data)
-            # If no exception, that's okay - we're using str type for email
-            self.assertIsInstance(request, RegisterRequest)
-        except ValidationError:
-            # If validation error, that's also fine - means email validation is working
-            pass
+        # Should raise validation error for invalid email format
+        with self.assertRaises(ValidationError):
+            RegisterRequest(**request_data)
 
 
 if __name__ == "__main__":
