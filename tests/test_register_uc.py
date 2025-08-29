@@ -42,6 +42,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         mock_user.email = "newuser@example.com"
         mock_user.first_name = "John"
         mock_user.last_name = "Doe"
+        mock_user.role = "user"
         self.mock_user_service.save_user.return_value = mock_user
 
         with unittest.mock.patch(
@@ -56,6 +57,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(result.user.email, "newuser@example.com")
             self.assertEqual(result.user.first_name, "John")
             self.assertEqual(result.user.last_name, "Doe")
+            self.assertEqual(result.user.role, "user")
             self.mock_user_service.check_user_exist.assert_called_once_with(
                 "newuser@example.com"
             )
@@ -129,6 +131,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
             mock_user.first_name = kwargs.get("first_name")
             mock_user.last_name = kwargs.get("last_name")
             mock_user.password = kwargs.get("password")
+            mock_user.role = kwargs.get("role", "user")
             created_users.append(mock_user)
             return mock_user
 

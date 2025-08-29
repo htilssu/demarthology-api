@@ -39,6 +39,7 @@ class RegisterUC(UseCase):
             first_name=data.first_name,
             last_name=data.last_name,
             dob=data.dob,
+            role=data.role,  # Include role from request
         )
 
         # Save user to database through service
@@ -49,6 +50,7 @@ class RegisterUC(UseCase):
             email=saved_user.email,
             first_name=saved_user.first_name,
             last_name=saved_user.last_name,
+            role=saved_user.role,  # Include role in response
         )
         return RegisterResponse(
             success=True, message="Registration successful", user=user_info

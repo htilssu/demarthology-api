@@ -15,7 +15,7 @@ class TestRegisterResponseSchema(unittest.TestCase):
         """Test RegisterResponse model creation."""
         # Arrange
         user_info = UserInfo(
-            email="test@example.com", first_name="John", last_name="Doe"
+            email="test@example.com", first_name="John", last_name="Doe", role="user"
         )
 
         # Act
@@ -29,12 +29,13 @@ class TestRegisterResponseSchema(unittest.TestCase):
         self.assertEqual(response.user.email, "test@example.com")
         self.assertEqual(response.user.first_name, "John")
         self.assertEqual(response.user.last_name, "Doe")
+        self.assertEqual(response.user.role, "user")
 
     def test_register_response_serialization(self):
         """Test that RegisterResponse can be serialized to JSON for middleware."""
         # Arrange
         user_info = UserInfo(
-            email="jane@example.com", first_name="Jane", last_name="Smith"
+            email="jane@example.com", first_name="Jane", last_name="Smith", role="user"
         )
         response = RegisterResponse(
             success=True, message="User registered successfully", user=user_info
@@ -51,6 +52,7 @@ class TestRegisterResponseSchema(unittest.TestCase):
                 "email": "jane@example.com",
                 "first_name": "Jane",
                 "last_name": "Smith",
+                "role": "user",
             },
         }
         self.assertEqual(serialized, expected)

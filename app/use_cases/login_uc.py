@@ -36,7 +36,10 @@ class LoginUC(UseCase):
 
         # Return success response with token
         user_info = UserInfo(
-            email=user.email, first_name=user.first_name, last_name=user.last_name
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            role=user.role,  # Include role in response
         )
         return LoginResponse(
             success=True,

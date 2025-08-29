@@ -21,7 +21,7 @@ async def get_current_user_profile(
 ):
     """Get the current authenticated user's profile."""
     current_user = await current_user_service.get_current_user(request)
-    
+
     return {
         "success": True,
         "message": "User profile retrieved successfully",
@@ -60,5 +60,5 @@ async def get_profile(
 # GET /api/me
 # Headers: Authorization: Bearer <your-jwt-token>
 #
-# GET /api/profile  
+# GET /api/profile
 # Headers: Authorization: Bearer <your-jwt-token>
