@@ -3,4 +3,4 @@ from app.repositories.repository import PaginatedRepository
 
 
 class UserRepository(PaginatedRepository[User]):
-    pass
+    document_class = User
