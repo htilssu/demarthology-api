@@ -31,13 +31,15 @@ app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(NotFoundException, not_found_exception_handler)
 app.add_exception_handler(ValidationError, validation_exception_handler)
 
+# Add camelCase conversion middleware
+app.add_middleware(CamelCaseConvertMiddleware)
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-
-# Add camelCase conversion middleware
-app.add_middleware(CamelCaseConvertMiddleware)
 
 register_router(app)

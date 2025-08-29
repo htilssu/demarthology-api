@@ -27,7 +27,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         # Arrange
         register_request = RegisterRequest(
             email="newuser@example.com",
-            password="password123",
+            password="Password123!",
             first_name="John",
             last_name="Doe",
             dob=datetime(1990, 1, 1),
@@ -63,7 +63,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         # Arrange
         register_request = RegisterRequest(
             email="existing@example.com",
-            password="password123",
+            password="Password123!",
             first_name="John",
             last_name="Doe",
             dob=datetime(1990, 1, 1),
@@ -82,7 +82,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
     async def test_password_is_hashed(self):
         """Test that password is properly hashed before saving."""
         # Arrange
-        plain_password = "plainpassword123"
+        plain_password = "PlainPassword123!"
         register_request = RegisterRequest(
             email="test@example.com",
             password=plain_password,
