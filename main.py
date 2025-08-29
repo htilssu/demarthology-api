@@ -14,11 +14,13 @@ from app.errors.error_handler import (
 from app.errors.not_found import NotFoundException
 from app.middlewares.camel_case_convert_middleware import CamelCaseConvertMiddleware
 from app.routes.register_router import register_router
+from app.utils.seed import seed_default_roles
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
+    await seed_default_roles()
 
     yield
 

@@ -10,6 +10,7 @@ from fastapi import HTTPException
 
 from app.models.user import User
 from app.schemas.register_request import RegisterRequest
+from app.services.role_service import RoleService
 from app.services.user_service import UserService
 from app.use_cases.register_uc import RegisterUC
 
@@ -20,14 +21,15 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.mock_user_service = AsyncMock(spec=UserService)
-        self.register_uc = RegisterUC(user_service=self.mock_user_service)
+        self.mock_role_service = AsyncMock(spec=RoleService)
+        self.register_uc = RegisterUC(user_service=self.mock_user_service, role_service=self.mock_role_service)
 
     async def test_successful_registration(self):
         """Test successful user registration."""
         # Arrange
         register_request = RegisterRequest(
             email="newuser@example.com",
-            password="password123",
+            password="Password123!",  # Valid password format
             first_name="John",
             last_name="Doe",
             dob=datetime(1990, 1, 1),
@@ -36,12 +38,18 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         # Mock that user doesn't exist
         self.mock_user_service.check_user_exist.return_value = False
 
+        # Mock role service
+        mock_role = MagicMock()
+        mock_role.name = "user"
+        self.mock_role_service.get_role_by_name.return_value = mock_role
+
         # Mock the User creation and save_user method
         mock_user = MagicMock(spec=User)
         mock_user.email = "newuser@example.com"
         mock_user.first_name = "John"
         mock_user.last_name = "Doe"
-        mock_user.role = "user"
+        mock_user.role = mock_role
+        mock_user.fetch_link = AsyncMock()  # Mock the fetch_link method
         self.mock_user_service.save_user.return_value = mock_user
 
         with unittest.mock.patch("app.use_cases.register_uc.User", return_value=mock_user):
@@ -57,13 +65,14 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(result.user.role, "user")
             self.mock_user_service.check_user_exist.assert_called_once_with("newuser@example.com")
             self.mock_user_service.save_user.assert_called_once_with(mock_user)
+            self.mock_role_service.get_role_by_name.assert_called_once_with("user")
 
     async def test_registration_user_already_exists(self):
         """Test registration fails when user already exists."""
         # Arrange
         register_request = RegisterRequest(
             email="existing@example.com",
-            password="password123",
+            password="Password123!",  # Valid password format
             first_name="John",
             last_name="Doe",
             dob=datetime(1990, 1, 1),
@@ -82,7 +91,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
     async def test_password_is_hashed(self):
         """Test that password is properly hashed before saving."""
         # Arrange
-        plain_password = "plainpassword123"
+        plain_password = "PlainPassword123!"  # Valid password format
         register_request = RegisterRequest(
             email="test@example.com",
             password=plain_password,
@@ -94,6 +103,11 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         # Mock that user doesn't exist
         self.mock_user_service.check_user_exist.return_value = False
 
+        # Mock role service
+        mock_role = MagicMock()
+        mock_role.name = "user"
+        self.mock_role_service.get_role_by_name.return_value = mock_role
+
         # Mock the User creation and capture constructor arguments
         created_users = []
 
@@ -103,7 +117,8 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
             mock_user.first_name = kwargs.get("first_name")
             mock_user.last_name = kwargs.get("last_name")
             mock_user.password = kwargs.get("password")
-            mock_user.role = kwargs.get("role", "user")
+            mock_user.role = kwargs.get("role", mock_role)
+            mock_user.fetch_link = AsyncMock()  # Mock the fetch_link method
             created_users.append(mock_user)
             return mock_user
 
