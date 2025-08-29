@@ -20,7 +20,8 @@ app = FastAPI(lifespan=lifespan)
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], )
+    allow_origins=["*"],
+)
 
 # Add camelCase conversion middleware
 app.add_middleware(CamelCaseConvertMiddleware)
