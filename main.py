@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from configs.mongodb import init_db
-from routes.register_router import register_router
+from app.configs.mongodb import init_db
+from app.routes.register_router import register_router
 
 
 @asynccontextmanager

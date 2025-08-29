@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from schemas.login_request import LoginRequest
-from use_cases.login_uc import LoginUC
-from use_cases.usecase import UseCase
+from app.schemas.login_request import LoginRequest
+from app.use_cases.login_uc import LoginUC
+from app.use_cases.usecase import UseCase
 
 router = APIRouter(tags=["Authentication"])
 

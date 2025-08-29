@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import Generic, TypeVar, Type
 
-from errors.not_found import NotFoundException
-from models.base import Base
+from app.errors.not_found import NotFoundException
+from app.models.base import Base
 
 T = TypeVar("T", bound=Base)
 

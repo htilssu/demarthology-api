@@ -1,8 +1,8 @@
 from fastapi import Depends
 from starlette.responses import Response
 
-from schemas.login_request import LoginRequest
-from use_cases.usecase import UseCase
+from app.schemas.login_request import LoginRequest
+from app.use_cases.usecase import UseCase
 
 
 class LoginUC(UseCase):

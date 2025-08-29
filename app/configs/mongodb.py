@@ -2,10 +2,10 @@ from logging import Logger
 from traceback import print_stack
 
 from beanie import init_beanie
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from motor.motor_asyncio import AsyncIOMotorClient
 
-from configs.setting import setting
-from models.user import User
+from app.configs.setting import setting
+from app.models.user import User
 
 client = AsyncIOMotorClient(setting.MONGO_URI)
 logger = Logger('mongodb')

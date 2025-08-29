@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from routes import auth
+from app.routes import auth
 
 
 def register_router(app: FastAPI) -> None:
