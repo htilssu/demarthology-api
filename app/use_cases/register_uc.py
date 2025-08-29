@@ -33,7 +33,6 @@ class RegisterUC(UseCase):
             first_name=data.first_name,
             last_name=data.last_name,
             dob=data.dob,
-            role=data.role,  # Include role from request
         )
 
         # Save user to database through service
