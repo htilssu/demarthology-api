@@ -54,11 +54,7 @@ class CamelCaseConvertMiddleware:
         # Wrap send to convert response body
         async def send_wrapper(message):
             if message["type"] == "http.response.start":
-                headers = [
-                    (k, v)
-                    for k, v in message["headers"]
-                    if k.lower() != b"content-length"
-                ]
+                headers = [(k, v) for k, v in message["headers"] if k.lower() != b"content-length"]
                 message["headers"] = headers
 
             if message["type"] == "http.response.body":
