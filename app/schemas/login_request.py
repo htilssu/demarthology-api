@@ -4,6 +4,6 @@ from pydantic import BaseModel
 
 
 class LoginRequest(BaseModel):
-    username: str
+    email: str
     password: str
     remember_me: Optional[bool] = False
