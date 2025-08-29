@@ -2,7 +2,7 @@
 JWT token utility module for generating and verifying JWT tokens.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
 
 import jwt
@@ -20,9 +20,9 @@ def generate_token(user_data: Dict[str, Any]) -> str:
     Returns:
         str: The generated JWT token
     """
-    expiration = datetime.utcnow() + timedelta(hours=setting.JWT_EXPIRATION_HOURS)
+    expiration = datetime.now(timezone.utc) + timedelta(hours=setting.JWT_EXPIRATION_HOURS)
 
-    payload = {"user_data": user_data, "exp": expiration, "iat": datetime.utcnow()}
+    payload = {"user_data": user_data, "exp": expiration, "iat": datetime.now(timezone.utc)}
 
     return jwt.encode(payload, setting.JWT_SECRET, algorithm=setting.JWT_ALGORITHM)
 
