@@ -27,7 +27,7 @@ async def admin_only_endpoint(
 ):
     """Example endpoint that requires admin role."""
     # Get current user
-    current_user = await current_user_service.get_current_user(request)
+    current_user = await current_user_service.get_current_user()
 
     # Check admin permission
     admin_permission = AdminPermission()
@@ -43,7 +43,7 @@ async def moderator_or_admin_endpoint(
 ):
     """Example endpoint that requires moderator or admin role."""
     # Get current user
-    current_user = await current_user_service.get_current_user(request)
+    current_user = await current_user_service.get_current_user()
 
     # Check permissions (moderator OR admin)
     permissions = [
@@ -63,7 +63,7 @@ async def get_user_profile(
 ):
     """Example endpoint where users can access their own profile or admins can access any."""
     # Get current user
-    current_user = await current_user_service.get_current_user(request)
+    current_user = await current_user_service.get_current_user()
 
     # Create a mock resource representing the target user
     target_resource = type("UserResource", (), {"user_id": user_id})()
@@ -82,7 +82,7 @@ async def user_dashboard(
 ):
     """Example endpoint accessible by any authenticated user."""
     # Get current user
-    current_user = await current_user_service.get_current_user(request)
+    current_user = await current_user_service.get_current_user()
 
     # Check basic user permission
     user_permission = UserPermission()
@@ -98,7 +98,7 @@ async def conditional_access_endpoint(
 ):
     """Example endpoint with conditional logic based on user permissions."""
     # Get current user
-    current_user = await current_user_service.get_current_user(request)
+    current_user = await current_user_service.get_current_user()
 
     # Check if user has admin access
     admin_permission = AdminPermission()
@@ -147,7 +147,7 @@ async def custom_permission_endpoint(
 ):
     """Example endpoint using a custom permission class."""
     # Get current user
-    current_user = await current_user_service.get_current_user(request)
+    current_user = await current_user_service.get_current_user()
 
     # Use custom permission
     owner_permission = OwnerPermission(resource_owner)

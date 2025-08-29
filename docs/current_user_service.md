@@ -139,15 +139,17 @@ from fastapi import Depends
 from app.services.current_user_service import CurrentUserService
 from app.errors.unauthorized import UnauthorizedException
 
+
 def get_current_user_service() -> CurrentUserService:
     return CurrentUserService()
 
+
 def get_current_user(
-    request: Request, 
-    user_service: CurrentUserService = Depends(get_current_user_service)
+        request: Request,
+        user_service: CurrentUserService = Depends(get_current_user_service)
 ):
     try:
-        return user_service.get_current_user(request)
+        return user_service.get_current_user()
     except UnauthorizedException as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -155,8 +157,9 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+
 @router.get("/protected")
-async def protected_endpoint(current_user = Depends(get_current_user)):
+async def protected_endpoint(current_user=Depends(get_current_user)):
     return {"message": f"Hello {current_user['first_name']}!"}
 ```
 

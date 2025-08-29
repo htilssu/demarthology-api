@@ -45,7 +45,7 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
 
         # Assert
         self.assertTrue(result.success)
-        self.assertEqual(result.message, "Login successful")
+        self.assertEqual(result.message, "Đăng nhập thành công")
         self.assertEqual(result.user.email, "test@example.com")
         self.assertEqual(result.user.first_name, "John")
         self.assertEqual(result.user.last_name, "Doe")
@@ -66,7 +66,7 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
             await self.login_uc.action(login_request)
 
         self.assertEqual(context.exception.status_code, 401)
-        self.assertEqual(context.exception.detail, "Invalid credentials")
+        self.assertEqual(context.exception.detail, "Tài khoản không tồn tại. Vui lòng đăng ký trước khi đăng nhập.")
 
     async def test_login_invalid_password(self):
         """Test login with incorrect password."""
@@ -90,7 +90,7 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
             await self.login_uc.action(login_request)
 
         self.assertEqual(context.exception.status_code, 401)
-        self.assertEqual(context.exception.detail, "Invalid credentials")
+        self.assertEqual(context.exception.detail, "Mật khẩu không đúng. Vui lòng thử lại.")
 
 
 if __name__ == "__main__":

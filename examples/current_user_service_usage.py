@@ -36,7 +36,7 @@ def get_current_user(request: Request, user_service: CurrentUserService = Depend
         HTTPException: 401 if authentication fails
     """
     try:
-        return user_service.get_current_user(request)
+        return user_service.get_current_user()
     except UnauthorizedException as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -18,6 +18,6 @@ class LogoutUC(UseCase):
         # We could implement token blacklisting here if needed.
 
         # Validate that the user is authenticated (has valid token)
-        await self._current_user_service.get_current_user(request)
+        await self._current_user_service.get_current_user()
 
         return LogoutResponse(success=True, message="Logged out successfully")

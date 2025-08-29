@@ -10,18 +10,18 @@ class CurrentUserService:
     """Service for getting the current authenticated user."""
 
     def __init__(
-        self,
-        user_service: UserService = Depends(UserService),
-        session_provider: SessionProvider = Depends(TokenSessionProvider),
+            self,
+            request: Request,
+            user_service: UserService = Depends(UserService),
+            session_provider: SessionProvider = Depends(TokenSessionProvider),
     ):
         self._user_service = user_service
         self._session_provider = session_provider
+        self._request = request
 
-    async def get_current_user(self, request: Request) -> User:
+    async def get_current_user(self) -> User:
         """Get the current authenticated user from the request.
 
-        Args:
-            request: FastAPI request object
 
         Returns:
             User model of the authenticated user
@@ -30,7 +30,7 @@ class CurrentUserService:
             HTTPException: If user is not authenticated or not found
         """
         # Get session data from provider
-        session_data = await self._session_provider.get_session(request)
+        session_data = await self._session_provider.get_session(self._request)
 
         # Extract user identifier from session
         user_email = session_data.get("email")
@@ -43,6 +43,6 @@ class CurrentUserService:
         # Get user from service
         user = await self._user_service.find_by_email(user_email)
         if not user:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
         return user

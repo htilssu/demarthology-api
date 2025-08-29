@@ -44,7 +44,7 @@ class TestLoginWithJWT(unittest.IsolatedAsyncioTestCase):
 
         # Assert
         self.assertTrue(result.success)
-        self.assertEqual(result.message, "Login successful")
+        self.assertEqual(result.message, "Đăng nhập thành công")
         self.assertIsNotNone(result.access_token)
         self.assertEqual(result.token_type, "bearer")
 

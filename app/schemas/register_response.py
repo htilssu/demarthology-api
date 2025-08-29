@@ -9,3 +9,5 @@ class RegisterResponse(BaseModel):
     success: bool
     message: str
     user: UserInfo
+    access_token: str
+    token_type: str = "bearer"

@@ -20,7 +20,7 @@ async def get_current_user_profile(
     current_user_service: CurrentUserService = Depends(CurrentUserService),
 ):
     """Get the current authenticated user's profile."""
-    current_user = await current_user_service.get_current_user(request)
+    current_user = await current_user_service.get_current_user()
 
     return {
         "success": True,
