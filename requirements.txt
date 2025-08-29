@@ -5,3 +5,4 @@ fastapi
 pydantic
 pydantic-settings
 beanie[srv]
+passlib[bcrypt]
