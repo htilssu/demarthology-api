@@ -3,6 +3,7 @@ from app.repositories.repository import PaginatedRepository
 
 
 class UserRepository(PaginatedRepository[User]):
+    document_class = User
 
     async def find_by_email(self, email: str) -> User | None:
         """Find a user by email address."""
