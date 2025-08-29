@@ -19,7 +19,6 @@ class TestRegisterRequestSchema(unittest.TestCase):
         request_data = {
             "email": "test@example.com",
             "password": "testpassword123",
-            "confirm_password": "testpassword123",
             "first_name": "John",
             "last_name": "Doe",
             "dob": datetime(1990, 1, 1),
@@ -31,7 +30,6 @@ class TestRegisterRequestSchema(unittest.TestCase):
         # Assert
         self.assertEqual(request.email, "test@example.com")
         self.assertEqual(request.password, "testpassword123")
-        self.assertEqual(request.confirm_password, "testpassword123")
         self.assertEqual(request.first_name, "John")
         self.assertEqual(request.last_name, "Doe")
         self.assertEqual(request.dob, datetime(1990, 1, 1))
@@ -42,7 +40,6 @@ class TestRegisterRequestSchema(unittest.TestCase):
         request_data = {
             "email": "test@example.com",
             "password": "password123",
-            "confirm_password": "password123",
             "first_name": "Jane",
             "last_name": "Smith",
             "dob": datetime(1995, 6, 15),
@@ -55,7 +52,6 @@ class TestRegisterRequestSchema(unittest.TestCase):
         # Assert
         self.assertEqual(serialized["email"], "test@example.com")
         self.assertEqual(serialized["password"], "password123")
-        self.assertEqual(serialized["confirm_password"], "password123")
         self.assertEqual(serialized["first_name"], "Jane")
         self.assertEqual(serialized["last_name"], "Smith")
         self.assertEqual(serialized["dob"], datetime(1995, 6, 15))
@@ -72,7 +68,6 @@ class TestRegisterRequestSchema(unittest.TestCase):
         request_data = {
             "email": "invalid-email",
             "password": "password123",
-            "confirm_password": "password123",
             "first_name": "John",
             "last_name": "Doe",
             "dob": datetime(1990, 1, 1),

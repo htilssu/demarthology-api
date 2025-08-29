@@ -28,7 +28,6 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         register_request = RegisterRequest(
             email="newuser@example.com",
             password="password123",
-            confirm_password="password123",
             first_name="John",
             last_name="Doe",
             dob=datetime(1990, 1, 1),
@@ -59,32 +58,12 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
             self.mock_user_service.check_user_exist.assert_called_once_with("newuser@example.com")
             self.mock_user_service.save_user.assert_called_once_with(mock_user)
 
-    async def test_registration_passwords_do_not_match(self):
-        """Test registration fails when passwords don't match."""
-        # Arrange
-        register_request = RegisterRequest(
-            email="newuser@example.com",
-            password="password123",
-            confirm_password="differentpassword",
-            first_name="John",
-            last_name="Doe",
-            dob=datetime(1990, 1, 1),
-        )
-
-        # Act & Assert
-        with self.assertRaises(HTTPException) as context:
-            await self.register_uc.action(register_request)
-
-        self.assertEqual(context.exception.status_code, 400)
-        self.assertEqual(context.exception.detail, "Passwords do not match")
-
     async def test_registration_user_already_exists(self):
         """Test registration fails when user already exists."""
         # Arrange
         register_request = RegisterRequest(
             email="existing@example.com",
             password="password123",
-            confirm_password="password123",
             first_name="John",
             last_name="Doe",
             dob=datetime(1990, 1, 1),
@@ -107,7 +86,6 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         register_request = RegisterRequest(
             email="test@example.com",
             password=plain_password,
-            confirm_password=plain_password,
             first_name="Test",
             last_name="User",
             dob=datetime(1990, 1, 1),
