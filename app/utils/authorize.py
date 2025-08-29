@@ -26,20 +26,6 @@ class Permission[PC: PermissionContext](ABC):
         pass
 
 
-class CanEditRoleContext(PermissionContext[User]):
-    """Context for role editing permissions."""
-
-    def __init__(self, user: User | None = None, obj: User | None = None):
-        self.user = user
-        self.obj = obj
-
-    def get_user(self) -> User | None:
-        return self.user
-
-    def get_obj(self) -> User | None:
-        return self.obj
-
-
 async def authorize[T](permission: Permission[T], context: PermissionContext[T]) -> None:
     """Authorize access based on permission and context.
 
