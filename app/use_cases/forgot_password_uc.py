@@ -1,7 +1,7 @@
-from fastapi import HTTPException, status, Depends
+from fastapi import Depends, HTTPException, status
 
-from app.schemas.forgot_password_request import ForgotPasswordRequest
 from app.schemas.auth_responses import ForgotPasswordResponse
+from app.schemas.forgot_password_request import ForgotPasswordRequest
 from app.services.user_service import UserService
 from app.use_cases.usecase import UseCase
 from app.utils.jwt import JWTUtils

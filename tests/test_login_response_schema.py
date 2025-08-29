@@ -13,9 +13,7 @@ class TestLoginResponseSchema(unittest.TestCase):
 
     def test_user_info_creation(self):
         """Test UserInfo model creation."""
-        user_info = UserInfo(
-            email="test@example.com", first_name="John", last_name="Doe", role="user"
-        )
+        user_info = UserInfo(email="test@example.com", first_name="John", last_name="Doe", role="user")
 
         self.assertEqual(user_info.email, "test@example.com")
         self.assertEqual(user_info.first_name, "John")
@@ -24,9 +22,7 @@ class TestLoginResponseSchema(unittest.TestCase):
 
     def test_login_response_creation(self):
         """Test LoginResponse model creation."""
-        user_info = UserInfo(
-            email="test@example.com", first_name="John", last_name="Doe", role="user"
-        )
+        user_info = UserInfo(email="test@example.com", first_name="John", last_name="Doe", role="user")
         response = LoginResponse(
             success=True,
             message="Login successful",
@@ -45,9 +41,7 @@ class TestLoginResponseSchema(unittest.TestCase):
 
     def test_login_response_serialization(self):
         """Test that LoginResponse can be serialized to JSON for middleware."""
-        user_info = UserInfo(
-            email="test@example.com", first_name="John", last_name="Doe", role="user"
-        )
+        user_info = UserInfo(email="test@example.com", first_name="John", last_name="Doe", role="user")
         response = LoginResponse(
             success=True,
             message="Login successful",

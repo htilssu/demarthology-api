@@ -5,11 +5,12 @@ This file demonstrates how to use the CurrentUserService to protect API endpoint
 and get current user information from JWT tokens.
 """
 
-from fastapi import Request, Depends, HTTPException, status
-from typing import Dict, Any
+from typing import Any, Dict
 
-from app.services.current_user_service import CurrentUserService
+from fastapi import Depends, HTTPException, Request, status
+
 from app.errors.unauthorized import UnauthorizedException
+from app.services.current_user_service import CurrentUserService
 
 
 def get_current_user_service() -> CurrentUserService:
@@ -17,23 +18,20 @@ def get_current_user_service() -> CurrentUserService:
     return CurrentUserService()
 
 
-def get_current_user(
-    request: Request, 
-    user_service: CurrentUserService = Depends(get_current_user_service)
-) -> Dict[str, Any]:
+def get_current_user(request: Request, user_service: CurrentUserService = Depends(get_current_user_service)) -> Dict[str, Any]:
     """
     FastAPI dependency to get current authenticated user.
-    
+
     This can be used as a dependency in FastAPI routes to ensure the user
     is authenticated and to get their information.
-    
+
     Args:
         request (Request): FastAPI request object
         user_service (CurrentUserService): CurrentUserService instance
-        
+
     Returns:
         Dict[str, Any]: Current user data from JWT token
-        
+
     Raises:
         HTTPException: 401 if authentication fails
     """

@@ -7,16 +7,16 @@ from unittest.mock import MagicMock
 
 from app.models.user import User
 from app.utils.authorize import (
+    AdminOnlyContext,
     AdminPermission,
     AnyRolePermission,
+    BasicContext,
+    CanEditRole,
+    CanEditRoleContext,
+    ResourceOwnerContext,
     RolePermission,
     SelfOrAdminPermission,
     UserPermission,
-    CanEditRole,
-    BasicContext,
-    AdminOnlyContext,
-    ResourceOwnerContext,
-    CanEditRoleContext,
 )
 
 

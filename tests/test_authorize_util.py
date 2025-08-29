@@ -3,13 +3,13 @@ Tests for authorization utilities.
 """
 
 import unittest
-from unittest.mock import MagicMock
 from typing import Any
+from unittest.mock import MagicMock
 
 from fastapi import HTTPException
 
 from app.models.user import User
-from app.utils.authorize import authorize, Permission, PermissionContext, BasicContext
+from app.utils.authorize import BasicContext, Permission, PermissionContext, authorize
 
 
 class MockPermissionContext(PermissionContext[Any]):
@@ -72,9 +72,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         """Test authorize works with resource in context."""
         # Arrange
         permission = MockPermission(should_authorize=True)
-        context_with_resource = MockPermissionContext(
-            user=self.user, obj={"id": "resource123"}
-        )
+        context_with_resource = MockPermissionContext(user=self.user, obj={"id": "resource123"})
 
         # Act & Assert (should not raise exception)
         await authorize(permission, context_with_resource)

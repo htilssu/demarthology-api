@@ -31,9 +31,7 @@ class TestUserService(unittest.IsolatedAsyncioTestCase):
 
         # Assert
         self.assertTrue(result)
-        self.mock_user_repository.find_by_email.assert_called_once_with(
-            "test@example.com"
-        )
+        self.mock_user_repository.find_by_email.assert_called_once_with("test@example.com")
 
     async def test_check_user_exist_returns_false_when_user_not_exists(self):
         """Test check_user_exist returns False when user doesn't exist."""
@@ -45,16 +43,12 @@ class TestUserService(unittest.IsolatedAsyncioTestCase):
 
         # Assert
         self.assertFalse(result)
-        self.mock_user_repository.find_by_email.assert_called_once_with(
-            "test@example.com"
-        )
+        self.mock_user_repository.find_by_email.assert_called_once_with("test@example.com")
 
     async def test_check_user_exist_handles_exception(self):
         """Test check_user_exist handles repository exceptions."""
         # Arrange
-        self.mock_user_repository.find_by_email.side_effect = Exception(
-            "Database error"
-        )
+        self.mock_user_repository.find_by_email.side_effect = Exception("Database error")
 
         # Act & Assert
         with self.assertRaises(HTTPException) as context:
@@ -100,16 +94,12 @@ class TestUserService(unittest.IsolatedAsyncioTestCase):
 
         # Assert
         self.assertEqual(result, mock_user)
-        self.mock_user_repository.find_by_email.assert_called_once_with(
-            "test@example.com"
-        )
+        self.mock_user_repository.find_by_email.assert_called_once_with("test@example.com")
 
     async def test_find_by_email_handles_exception(self):
         """Test find_by_email handles repository exceptions."""
         # Arrange
-        self.mock_user_repository.find_by_email.side_effect = Exception(
-            "Database error"
-        )
+        self.mock_user_repository.find_by_email.side_effect = Exception("Database error")
 
         # Act & Assert
         with self.assertRaises(HTTPException) as context:

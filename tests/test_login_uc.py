@@ -8,8 +8,8 @@ from unittest.mock import AsyncMock, MagicMock
 from fastapi import HTTPException
 
 from app.models.user import User
-from app.services.user_service import UserService
 from app.schemas.login_request import LoginRequest
+from app.services.user_service import UserService
 from app.use_cases.login_uc import LoginUC
 from app.utils.password import hash_password
 
@@ -59,9 +59,7 @@ class TestLoginUC(unittest.IsolatedAsyncioTestCase):
         # Arrange
         self.mock_user_service.find_by_email.return_value = None
 
-        login_request = LoginRequest(
-            email="nonexistent@example.com", password="anypassword"
-        )
+        login_request = LoginRequest(email="nonexistent@example.com", password="anypassword")
 
         # Act & Assert
         with self.assertRaises(HTTPException) as context:

@@ -1,6 +1,6 @@
-from typing import Dict, Any
+from typing import Any, Dict
 
-from fastapi import Request, HTTPException, status
+from fastapi import HTTPException, Request, status
 
 from app.services.session_provider import SessionProvider
 from app.utils.jwt import JWTUtils

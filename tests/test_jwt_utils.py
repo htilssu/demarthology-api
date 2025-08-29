@@ -1,7 +1,7 @@
-import pytest
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
+import pytest
 from fastapi import HTTPException
 
 from app.utils.jwt import JWTUtils
@@ -117,6 +117,4 @@ class TestJWTUtils:
 
     def test_reset_token_expires_faster_than_access_token(self):
         """Test that reset tokens expire faster than access tokens."""
-        assert (
-            JWTUtils.RESET_TOKEN_EXPIRE_MINUTES < JWTUtils.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
+        assert JWTUtils.RESET_TOKEN_EXPIRE_MINUTES < JWTUtils.ACCESS_TOKEN_EXPIRE_MINUTES

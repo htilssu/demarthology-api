@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, List
+
 from fastapi import HTTPException, status
 
 from app.models.user import User
@@ -39,9 +40,7 @@ class CanEditRoleContext(PermissionContext[User]):
         return self.obj
 
 
-async def authorize[T](
-        permission: Permission[T], context: PermissionContext[T]
-) -> None:
+async def authorize[T](permission: Permission[T], context: PermissionContext[T]) -> None:
     """Authorize access based on permission and context.
 
     Args:
@@ -52,6 +51,4 @@ async def authorize[T](
         HTTPException: If permission is not granted (403 Forbidden)
     """
     if not await permission.authorize(context):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions"
-        )
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
