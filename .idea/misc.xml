@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.12 (demarthology-api)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (demarthology-api)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.12.11 Docker Compose (server)" project-jdk-type="Python SDK" />
 </project>
