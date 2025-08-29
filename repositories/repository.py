@@ -1,11 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Generic, TypeVar, Type
 
-from beanie import Document
-
 from errors.not_found import NotFoundException
+from models.base import Base
 
-T = TypeVar("T", bound=Document)
+T = TypeVar("T", bound=Base)
 
 
 class PaginatedData(Generic[T]):

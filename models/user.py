@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from beanie import Document
+from models.base import Base
 
 
-class User(Document):
+class User(Base):
     email: str
     password: str
     first_name: str
