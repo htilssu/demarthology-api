@@ -8,6 +8,7 @@ from app.repositories.user_repository import UserRepository
 from app.schemas.login_request import LoginRequest
 from app.use_cases.usecase import UseCase
 from app.utils.jwt_utils import create_access_token
+from app.utils.password_utils import verify_password
 
 
 class LoginUC(UseCase):
@@ -35,9 +36,8 @@ class LoginUC(UseCase):
                 detail="Invalid credentials"
             )
         
-        # In a real application, you should hash and verify passwords
-        # For now, we'll do a simple comparison
-        if user.password != data.password:
+        # Verify password using bcrypt
+        if not verify_password(data.password, user.password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid credentials"
