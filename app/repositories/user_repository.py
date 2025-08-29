@@ -1,4 +1,4 @@
-from app.models.user import User
+from app.domain.entities.user import User
 from app.repositories.repository import PaginatedRepository
 
 

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.dependencies.auth import get_current_user
-from app.models.user import User
+from app.domain.entities.user import User
 from app.schemas.login_request import LoginRequest
 from app.schemas.register_request import RegisterRequest
 from app.use_cases.login_uc import LoginUC

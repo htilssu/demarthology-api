@@ -2,7 +2,7 @@ from datetime import timedelta
 from fastapi import HTTPException, status
 
 from app.configs.setting import setting
-from app.models.user import User
+from app.domain.entities.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.register_request import RegisterRequest
 from app.use_cases.usecase import UseCase

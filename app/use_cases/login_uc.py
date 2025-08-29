@@ -3,7 +3,7 @@ from fastapi import Depends, HTTPException, status
 from starlette.responses import JSONResponse
 
 from app.configs.setting import setting
-from app.models.user import User
+from app.domain.entities.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.login_request import LoginRequest
 from app.use_cases.usecase import UseCase
