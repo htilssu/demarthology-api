@@ -22,8 +22,7 @@ class UserService:
     async def save_user(self, user: User) -> User:
         """Save a user to the database."""
         try:
-            await user.create()
-            return user
+            return await self._user_repository.create(user)
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -67,20 +67,20 @@ class TestUserService(unittest.IsolatedAsyncioTestCase):
         """Test save_user successfully saves a user."""
         # Arrange
         mock_user = MagicMock(spec=User)
-        mock_user.create = AsyncMock()
+        self.mock_user_repository.create.return_value = mock_user
 
         # Act
         result = await self.user_service.save_user(mock_user)
 
         # Assert
         self.assertEqual(result, mock_user)
-        mock_user.create.assert_called_once()
+        self.mock_user_repository.create.assert_called_once_with(mock_user)
 
     async def test_save_user_handles_exception(self):
         """Test save_user handles exceptions during user creation."""
         # Arrange
         mock_user = MagicMock(spec=User)
-        mock_user.create = AsyncMock(side_effect=Exception("Database error"))
+        self.mock_user_repository.create.side_effect = Exception("Database error")
 
         # Act & Assert
         with self.assertRaises(HTTPException) as context:
