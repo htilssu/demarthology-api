@@ -51,7 +51,7 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Handle all other exceptions and return 500."""
     logger.error(f"Unhandled exception: {type(exc).__name__}: {str(exc)}", exc_info=True)
-    
+
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={

@@ -5,11 +5,13 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.configs.setting import setting
-from app.models.user import User
 from app.models.symptom import Symptom
+
 from app.models.question import Question
 from app.models.answer import Answer
 from app.models.vote import Vote
+from app.models.user import User
+
 
 client = AsyncIOMotorClient(setting.MONGO_URI)
 logger = Logger("mongodb")
