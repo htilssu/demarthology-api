@@ -1,33 +1,43 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from starlette.responses import Response
 
+from app.repositories.user_repository import UserRepository
 from app.schemas.login_request import LoginRequest
 from app.use_cases.usecase import UseCase
 from app.utils.password import verify_password
 
 
 class LoginUC(UseCase):
-    def __init__(self, response=Depends(Response)):
-        self.response = response
-        pass
+    def __init__(self, user_repository: UserRepository = Depends()):
+        self.user_repository = user_repository
 
     async def action(self, *args, **kwargs):
         data: LoginRequest = args[0]
         
-        # Example of how to use the password utility for login verification
-        # In a real implementation, you would:
-        # 1. Find the user by username from the database
-        # 2. Get the stored hashed password
-        # 3. Use verify_password to check if the provided password matches
-        # 
-        # Example:
-        # user = await user_repository.find_by_username(data.username)
-        # if user and verify_password(data.password, user.password):
-        #     # Login successful
-        #     return {"success": True, "message": "Login successful"}
-        # else:
-        #     # Login failed
-        #     return {"success": False, "message": "Invalid credentials"}
-
-        self.response.headers.add('Access-Control-Allow-Origin', '*')
+        # Find user by email (username field maps to email)
+        user = await self.user_repository.find_by_email(data.username)
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid credentials"
+            )
+        
+        # Verify password
+        if not verify_password(data.password, user.password):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid credentials"
+            )
+        
+        # Return success response
+        return {
+            "success": True,
+            "message": "Login successful",
+            "user": {
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name
+            }
+        }
 

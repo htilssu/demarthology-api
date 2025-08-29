@@ -9,9 +9,9 @@ router = APIRouter(tags=["Authentication"])
 
 @router.post("/login", summary="Đăng nhập")
 async def login(data: LoginRequest, uc: UseCase = Depends(LoginUC)):
-    await uc.action(data)
+    return await uc.action(data)
 
 
 @router.post("/register", summary="Đăng ký")
-async def login(data: LoginRequest, ):
+async def register(data: LoginRequest):
     pass
