@@ -1,10 +1,10 @@
 from fastapi import Depends, HTTPException, status
 
 from app.models.user import User
-from app.services.user_service import UserService
+from app.schemas.login_response import UserInfo
 from app.schemas.register_request import RegisterRequest
 from app.schemas.register_response import RegisterResponse
-from app.schemas.login_response import UserInfo
+from app.services.user_service import UserService
 from app.use_cases.usecase import UseCase
 from app.utils.password import hash_password
 
@@ -15,6 +15,10 @@ class RegisterUC(UseCase):
 
     async def action(self, *args, **kwargs):
         data: RegisterRequest = args[0]
+
+        # Check if passwords match
+        if data.password != data.confirm_password:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Passwords do not match")
 
         # Check if user already exists
         if await self._user_service.check_user_exist(str(data.email)):
@@ -46,6 +50,4 @@ class RegisterUC(UseCase):
             last_name=saved_user.last_name,
             role=saved_user.role,  # Include role in response
         )
-        return RegisterResponse(
-            success=True, message="Registration successful", user=user_info
-        )
+        return RegisterResponse(success=True, message="Registration successful", user=user_info)

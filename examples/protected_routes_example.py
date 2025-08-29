@@ -5,11 +5,12 @@ This example demonstrates how to create a protected API endpoint that requires
 JWT authentication and returns user information.
 """
 
-from fastapi import APIRouter, Request, HTTPException, status
-from typing import Dict, Any
+from typing import Any, Dict
 
-from app.services.current_user_service import CurrentUserService
+from fastapi import APIRouter, HTTPException, Request, status
+
 from app.errors.unauthorized import UnauthorizedException
+from app.services.current_user_service import CurrentUserService
 
 # Create router for example endpoints
 router = APIRouter(prefix="/api", tags=["Example Protected Routes"])
@@ -22,20 +23,20 @@ current_user_service = CurrentUserService()
 async def get_user_profile(request: Request) -> Dict[str, Any]:
     """
     Get current user profile information.
-    
+
     Requires valid JWT token in Authorization header:
     Authorization: Bearer <your_jwt_token>
-    
+
     Returns:
         Dict containing user profile information
-        
+
     Raises:
         HTTPException: 401 if authentication fails
     """
     try:
         # Get current user from JWT token
         user_data = current_user_service.get_current_user(request)
-        
+
         return {
             "success": True,
             "message": "Profile retrieved successfully",
@@ -43,8 +44,8 @@ async def get_user_profile(request: Request) -> Dict[str, Any]:
                 "email": user_data["email"],
                 "first_name": user_data["first_name"],
                 "last_name": user_data["last_name"],
-                "full_name": f"{user_data['first_name']} {user_data['last_name']}"
-            }
+                "full_name": f"{user_data['first_name']} {user_data['last_name']}",
+            },
         }
     except UnauthorizedException as e:
         raise HTTPException(
@@ -58,18 +59,18 @@ async def get_user_profile(request: Request) -> Dict[str, Any]:
 async def protected_endpoint(request: Request) -> Dict[str, Any]:
     """
     Example of a protected endpoint that requires authentication.
-    
+
     Returns:
         Dict with personalized greeting for authenticated user
     """
     try:
         user_data = current_user_service.get_current_user(request)
-        
+
         return {
             "message": f"Hello {user_data['first_name']}! This is a protected endpoint.",
             "user_email": user_data["email"],
             "access_granted": True,
-            "timestamp": "2024-01-01T00:00:00Z"  # In real app, use datetime.utcnow()
+            "timestamp": "2024-01-01T00:00:00Z",  # In real app, use datetime.utcnow()
         }
     except UnauthorizedException as e:
         raise HTTPException(

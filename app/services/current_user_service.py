@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status, Request
+from fastapi import Depends, HTTPException, Request, status
 
 from app.models.user import User
 from app.services.session_provider import SessionProvider
@@ -43,8 +43,6 @@ class CurrentUserService:
         # Get user from service
         user = await self._user_service.find_by_email(user_email)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
 
         return user

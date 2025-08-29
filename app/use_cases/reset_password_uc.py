@@ -1,7 +1,7 @@
-from fastapi import HTTPException, status, Depends
+from fastapi import Depends, HTTPException, status
 
-from app.schemas.reset_password_request import ResetPasswordRequest
 from app.schemas.auth_responses import ResetPasswordResponse
+from app.schemas.reset_password_request import ResetPasswordRequest
 from app.services.user_service import UserService
 from app.use_cases.usecase import UseCase
 from app.utils.jwt import JWTUtils
@@ -29,9 +29,7 @@ class ResetPasswordUC(UseCase):
             # Find user by email
             user = await self._user_service.find_by_email(email)
             if not user:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-                )
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
             # Hash new password
             hashed_password = PasswordUtils.hash_password(data.new_password)
@@ -40,9 +38,7 @@ class ResetPasswordUC(UseCase):
             user.password = hashed_password
             await self._user_service.save_user(user)
 
-            return ResetPasswordResponse(
-                success=True, message="Password has been reset successfully"
-            )
+            return ResetPasswordResponse(success=True, message="Password has been reset successfully")
 
         except HTTPException:
             # Re-raise HTTP exceptions as they contain proper error messages

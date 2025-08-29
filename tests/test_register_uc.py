@@ -9,8 +9,8 @@ from unittest.mock import AsyncMock, MagicMock
 from fastapi import HTTPException
 
 from app.models.user import User
-from app.services.user_service import UserService
 from app.schemas.register_request import RegisterRequest
+from app.services.user_service import UserService
 from app.use_cases.register_uc import RegisterUC
 
 
@@ -45,9 +45,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         mock_user.role = "user"
         self.mock_user_service.save_user.return_value = mock_user
 
-        with unittest.mock.patch(
-            "app.use_cases.register_uc.User", return_value=mock_user
-        ):
+        with unittest.mock.patch("app.use_cases.register_uc.User", return_value=mock_user):
             # Act
             result = await self.register_uc.action(register_request)
 
@@ -58,9 +56,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(result.user.first_name, "John")
             self.assertEqual(result.user.last_name, "Doe")
             self.assertEqual(result.user.role, "user")
-            self.mock_user_service.check_user_exist.assert_called_once_with(
-                "newuser@example.com"
-            )
+            self.mock_user_service.check_user_exist.assert_called_once_with("newuser@example.com")
             self.mock_user_service.save_user.assert_called_once_with(mock_user)
 
     async def test_registration_passwords_do_not_match(self):
@@ -102,9 +98,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
             await self.register_uc.action(register_request)
 
         self.assertEqual(context.exception.status_code, 409)
-        self.assertEqual(
-            context.exception.detail, "User with this email already exists"
-        )
+        self.assertEqual(context.exception.detail, "User with this email already exists")
 
     async def test_password_is_hashed(self):
         """Test that password is properly hashed before saving."""
@@ -138,9 +132,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         # Mock save_user to return the created user
         self.mock_user_service.save_user.side_effect = lambda user: user
 
-        with unittest.mock.patch(
-            "app.use_cases.register_uc.User", side_effect=mock_user_init
-        ):
+        with unittest.mock.patch("app.use_cases.register_uc.User", side_effect=mock_user_init):
             # Act
             result = await self.register_uc.action(register_request)
 
@@ -148,12 +140,8 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(result.success)
             self.assertEqual(len(created_users), 1)
             created_user = created_users[0]
-            self.assertNotEqual(
-                created_user.password, plain_password
-            )  # Password should be hashed
-            self.assertTrue(
-                created_user.password.startswith("$2b$")
-            )  # bcrypt hash format
+            self.assertNotEqual(created_user.password, plain_password)  # Password should be hashed
+            self.assertTrue(created_user.password.startswith("$2b$"))  # bcrypt hash format
 
 
 if __name__ == "__main__":

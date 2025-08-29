@@ -1,6 +1,7 @@
-import pytest
 from unittest.mock import AsyncMock, Mock
-from fastapi import Request, HTTPException
+
+import pytest
+from fastapi import HTTPException, Request
 
 from app.models.user import User
 from app.schemas.auth_responses import LogoutResponse
@@ -39,9 +40,7 @@ class TestLogoutUC:
         return mock_user
 
     @pytest.mark.asyncio
-    async def test_logout_success(
-        self, logout_uc, mock_current_user_service, mock_request, sample_user
-    ):
+    async def test_logout_success(self, logout_uc, mock_current_user_service, mock_request, sample_user):
         """Test successful logout."""
         # Arrange
         mock_current_user_service.get_current_user = AsyncMock(return_value=sample_user)
@@ -56,9 +55,7 @@ class TestLogoutUC:
         mock_current_user_service.get_current_user.assert_called_once_with(mock_request)
 
     @pytest.mark.asyncio
-    async def test_logout_invalid_token(
-        self, logout_uc, mock_current_user_service, mock_request
-    ):
+    async def test_logout_invalid_token(self, logout_uc, mock_current_user_service, mock_request):
         """Test logout with invalid token."""
         # Arrange
         mock_current_user_service.get_current_user = AsyncMock(
@@ -74,15 +71,11 @@ class TestLogoutUC:
         mock_current_user_service.get_current_user.assert_called_once_with(mock_request)
 
     @pytest.mark.asyncio
-    async def test_logout_no_authorization_header(
-        self, logout_uc, mock_current_user_service, mock_request
-    ):
+    async def test_logout_no_authorization_header(self, logout_uc, mock_current_user_service, mock_request):
         """Test logout without authorization header."""
         # Arrange
         mock_current_user_service.get_current_user = AsyncMock(
-            side_effect=HTTPException(
-                status_code=401, detail="Authorization header missing"
-            )
+            side_effect=HTTPException(status_code=401, detail="Authorization header missing")
         )
 
         # Act & Assert

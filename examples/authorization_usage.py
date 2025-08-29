@@ -6,16 +6,17 @@ in FastAPI routes to protect endpoints based on user roles and permissions.
 """
 
 from fastapi import Depends, Request
+
 from app.models.user import User
 from app.services.current_user_service import CurrentUserService
 from app.utils import (
-    require_permission,
-    require_any_permission,
-    check_permission,
     AdminPermission,
-    UserPermission,
     RolePermission,
     SelfOrAdminPermission,
+    UserPermission,
+    check_permission,
+    require_any_permission,
+    require_permission,
 )
 
 

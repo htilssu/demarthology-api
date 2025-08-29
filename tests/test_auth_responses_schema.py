@@ -2,8 +2,8 @@ import pytest
 
 from app.schemas.auth_responses import (
     ForgotPasswordResponse,
-    ResetPasswordResponse,
     LogoutResponse,
+    ResetPasswordResponse,
 )
 
 
@@ -27,9 +27,7 @@ class TestAuthResponseSchemas:
 
     def test_reset_password_response_creation(self):
         """Test creating a reset password response."""
-        response = ResetPasswordResponse(
-            success=True, message="Password reset successfully"
-        )
+        response = ResetPasswordResponse(success=True, message="Password reset successfully")
 
         assert response.success is True
         assert response.message == "Password reset successfully"

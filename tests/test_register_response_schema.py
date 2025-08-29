@@ -4,8 +4,8 @@ Tests for register response schema.
 
 import unittest
 
-from app.schemas.register_response import RegisterResponse
 from app.schemas.login_response import UserInfo
+from app.schemas.register_response import RegisterResponse
 
 
 class TestRegisterResponseSchema(unittest.TestCase):
@@ -14,14 +14,10 @@ class TestRegisterResponseSchema(unittest.TestCase):
     def test_register_response_creation(self):
         """Test RegisterResponse model creation."""
         # Arrange
-        user_info = UserInfo(
-            email="test@example.com", first_name="John", last_name="Doe", role="user"
-        )
+        user_info = UserInfo(email="test@example.com", first_name="John", last_name="Doe", role="user")
 
         # Act
-        response = RegisterResponse(
-            success=True, message="Registration successful", user=user_info
-        )
+        response = RegisterResponse(success=True, message="Registration successful", user=user_info)
 
         # Assert
         self.assertTrue(response.success)
@@ -34,12 +30,8 @@ class TestRegisterResponseSchema(unittest.TestCase):
     def test_register_response_serialization(self):
         """Test that RegisterResponse can be serialized to JSON for middleware."""
         # Arrange
-        user_info = UserInfo(
-            email="jane@example.com", first_name="Jane", last_name="Smith", role="user"
-        )
-        response = RegisterResponse(
-            success=True, message="User registered successfully", user=user_info
-        )
+        user_info = UserInfo(email="jane@example.com", first_name="Jane", last_name="Smith", role="user")
+        response = RegisterResponse(success=True, message="User registered successfully", user=user_info)
 
         # Act
         serialized = response.model_dump()

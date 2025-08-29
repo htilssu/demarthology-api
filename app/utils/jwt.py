@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import Dict, Any
+from typing import Any, Dict
 
 import jwt
 from fastapi import HTTPException, status
@@ -17,9 +17,7 @@ class JWTUtils:
     def create_access_token(cls, data: Dict[str, Any]) -> str:
         """Create a JWT access token."""
         to_encode = data.copy()
-        expire = datetime.now(timezone.utc) + timedelta(
-            minutes=cls.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
+        expire = datetime.now(timezone.utc) + timedelta(minutes=cls.ACCESS_TOKEN_EXPIRE_MINUTES)
         to_encode.update({"exp": expire})
 
         return jwt.encode(to_encode, cls.SECRET_KEY, algorithm=cls.ALGORITHM)
@@ -31,22 +29,16 @@ class JWTUtils:
             payload = jwt.decode(token, cls.SECRET_KEY, algorithms=[cls.ALGORITHM])
             return payload
         except jwt.ExpiredSignatureError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired")
         except jwt.InvalidTokenError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
     @classmethod
     def create_reset_token(cls, email: str) -> str:
         """Create a password reset token."""
         data = {"email": email, "type": "reset"}
         to_encode = data.copy()
-        expire = datetime.now(timezone.utc) + timedelta(
-            minutes=cls.RESET_TOKEN_EXPIRE_MINUTES
-        )
+        expire = datetime.now(timezone.utc) + timedelta(minutes=cls.RESET_TOKEN_EXPIRE_MINUTES)
         to_encode.update({"exp": expire})
 
         return jwt.encode(to_encode, cls.SECRET_KEY, algorithm=cls.ALGORITHM)
@@ -57,9 +49,7 @@ class JWTUtils:
         try:
             payload = jwt.decode(token, cls.SECRET_KEY, algorithms=[cls.ALGORITHM])
             if payload.get("type") != "reset":
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token type"
-                )
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token type")
             return payload.get("email")
         except jwt.ExpiredSignatureError:
             raise HTTPException(
@@ -67,6 +57,4 @@ class JWTUtils:
                 detail="Reset token has expired",
             )
         except jwt.InvalidTokenError:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid reset token"
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid reset token")

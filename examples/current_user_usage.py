@@ -37,11 +37,7 @@ async def get_current_user_profile(
 
 @router.get("/profile", summary="Alternative way to get current user")
 async def get_profile(
-    current_user: User = Depends(
-        lambda request, service=Depends(CurrentUserService): service.get_current_user(
-            request
-        )
-    ),
+    current_user: User = Depends(lambda request, service=Depends(CurrentUserService): service.get_current_user(request)),
 ):
     """Alternative approach using dependency injection directly."""
     return {

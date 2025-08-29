@@ -1,4 +1,4 @@
-from fastapi import Request, Depends
+from fastapi import Depends, Request
 
 from app.schemas.auth_responses import LogoutResponse
 from app.services.current_user_service import CurrentUserService
@@ -8,9 +8,7 @@ from app.use_cases.usecase import UseCase
 class LogoutUC(UseCase):
     """Use case for handling logout requests."""
 
-    def __init__(
-        self, current_user_service: CurrentUserService = Depends(CurrentUserService)
-    ):
+    def __init__(self, current_user_service: CurrentUserService = Depends(CurrentUserService)):
         self._current_user_service = current_user_service
 
     async def action(self, request: Request) -> LogoutResponse:

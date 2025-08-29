@@ -1,6 +1,6 @@
-import pytest
 from unittest.mock import Mock, patch
 
+import pytest
 from fastapi import HTTPException
 
 from app.services.token_session_provider import TokenSessionProvider
@@ -38,9 +38,7 @@ class TestTokenSessionProvider:
         assert session["user_id"] == "123"
 
     @pytest.mark.asyncio
-    async def test_get_session_missing_authorization_header(
-        self, provider, mock_request
-    ):
+    async def test_get_session_missing_authorization_header(self, provider, mock_request):
         """Test missing authorization header."""
         mock_request.headers = {}
 
@@ -51,9 +49,7 @@ class TestTokenSessionProvider:
         assert "Authorization header missing" in exc_info.value.detail
 
     @pytest.mark.asyncio
-    async def test_get_session_invalid_authorization_format(
-        self, provider, mock_request
-    ):
+    async def test_get_session_invalid_authorization_format(self, provider, mock_request):
         """Test invalid authorization header format."""
         mock_request.headers = {"Authorization": "InvalidFormat token"}
 

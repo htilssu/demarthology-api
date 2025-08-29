@@ -1,12 +1,12 @@
 from fastapi import Depends, HTTPException, status
 from starlette.responses import Response
 
-from app.services.user_service import UserService
 from app.schemas.login_request import LoginRequest
 from app.schemas.login_response import LoginResponse, UserInfo
+from app.services.user_service import UserService
 from app.use_cases.usecase import UseCase
-from app.utils.password import verify_password
 from app.utils.jwt import JWTUtils
+from app.utils.password import verify_password
 
 
 class LoginUC(UseCase):
@@ -20,15 +20,11 @@ class LoginUC(UseCase):
         user = await self._user_service.find_by_email(data.email)
 
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
         # Verify password
         if not verify_password(data.password, user.password):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
         # Create access token
         token_data = {"email": user.email, "user_id": str(user.id)}
