@@ -1,8 +1,14 @@
 # Utils package initialization
 
-from .authorize import authorize
-from .permission import Permission, PermissionContext
-from .permissions import (
+from .authorize import (
+    authorize,
+    Permission,
+    PermissionContext,
+    BasicContext,
+    CanEditRoleContext,
+    AdminOnlyContext,
+    ResourceOwnerContext,
+    CanEditRole,
     AdminPermission,
     AnyRolePermission,
     RolePermission,
@@ -14,6 +20,11 @@ __all__ = [
     "authorize",
     "Permission",
     "PermissionContext",
+    "BasicContext",
+    "CanEditRoleContext",
+    "AdminOnlyContext",
+    "ResourceOwnerContext",
+    "CanEditRole",
     "RolePermission",
     "AnyRolePermission",
     "AdminPermission",

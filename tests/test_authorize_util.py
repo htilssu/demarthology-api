@@ -9,8 +9,21 @@ from typing import Any
 from fastapi import HTTPException
 
 from app.models.user import User
-from app.utils.authorize import authorize
-from app.utils.permission import Permission, PermissionContext
+from app.utils.authorize import authorize, Permission, PermissionContext, BasicContext
+
+
+class MockPermissionContext(PermissionContext[Any]):
+    """Mock permission context for testing."""
+
+    def __init__(self, user: User | None = None, obj: Any = None):
+        self.user = user
+        self.obj = obj
+
+    def get_user(self) -> User | None:
+        return self.user
+
+    def get_obj(self) -> Any:
+        return self.obj
 
 
 class MockPermission(Permission[Any]):
@@ -33,7 +46,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         self.user.email = "test@example.com"
         self.user.role = "user"
 
-        self.context = {"user": self.user}
+        self.context = MockPermissionContext(user=self.user)
 
     async def test_authorize_allows_access(self):
         """Test authorize passes when permission allows."""
@@ -59,14 +72,23 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         """Test authorize works with resource in context."""
         # Arrange
         permission = MockPermission(should_authorize=True)
-        context_with_resource = {"user": self.user, "resource": {"id": "resource123"}}
+        context_with_resource = MockPermissionContext(
+            user=self.user, obj={"id": "resource123"}
+        )
 
         # Act & Assert (should not raise exception)
         await authorize(permission, context_with_resource)
 
+    async def test_basic_context_creation(self):
+        """Test BasicContext can be created and used."""
+        # Arrange
+        basic_context = BasicContext(user=self.user, obj={"test": "data"})
+        permission = MockPermission(should_authorize=True)
 
-if __name__ == "__main__":
-    unittest.main()
+        # Act & Assert
+        await authorize(permission, basic_context)
+        self.assertEqual(basic_context.get_user(), self.user)
+        self.assertEqual(basic_context.get_obj(), {"test": "data"})
 
 
 if __name__ == "__main__":
