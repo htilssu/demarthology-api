@@ -1,6 +1,7 @@
 name: CI/CD Pipeline
 
 on:
+
   push:
     branches: [ main, dev, "*" ]
   pull_request:
@@ -54,14 +55,14 @@ jobs:
           isort .
 
       - name: Github Pushy
-        uses: htilssu/github_push_action@v0.0.5
+        uses: htilssu/github_push_action@v1
         with:
           commit-message: 'Auto-fix: Apply code formatting and import sorting'
-          token: ${{secrets.FGTOKEN}}
+          token: ${{ secrets.FGTOKEN }}
 
-      - name: Run tests with unittest
+      - name: Run tests with pytest
         run: |
-          python -m unittest discover tests -v
+          python -m pytest tests -v
 
       - name: Test application startup
         run: |

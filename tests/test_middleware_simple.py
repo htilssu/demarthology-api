@@ -12,13 +12,13 @@ from pydantic import BaseModel
 from app.middlewares.camel_case_convert_middleware import CamelCaseConvertMiddleware
 
 
-class TestRequest(BaseModel):
+class RequestModel(BaseModel):
     first_name: str
     last_name: str
     remember_me: bool = False
 
 
-class TestResponse(BaseModel):
+class ResponseModel(BaseModel):
     user_info: dict
     total_count: int
 
@@ -38,7 +38,7 @@ class TestCamelCaseMiddlewareSimple(unittest.TestCase):
         router = APIRouter()
 
         @router.post("/test")
-        async def test_endpoint(data: TestRequest):
+        async def test_endpoint(data: RequestModel):
             """Test endpoint that returns snake_case response."""
             return {
                 "user_info": {"first_name": data.first_name, "last_name": data.last_name, "remember_me": data.remember_me},
