@@ -24,9 +24,10 @@ class TestRolePermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "admin"
         permission = RolePermission("admin")
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
@@ -37,9 +38,22 @@ class TestRolePermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "user"
         permission = RolePermission("admin")
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
+
+        # Assert
+        self.assertFalse(result)
+
+    async def test_authorize_with_no_user(self):
+        """Test authorization fails with no user in context."""
+        # Arrange
+        permission = RolePermission("admin")
+        context = {}
+
+        # Act
+        result = await permission.authorize(context)
 
         # Assert
         self.assertFalse(result)
@@ -54,9 +68,10 @@ class TestAnyRolePermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "moderator"
         permission = AnyRolePermission(["admin", "moderator", "editor"])
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
@@ -67,9 +82,22 @@ class TestAnyRolePermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "user"
         permission = AnyRolePermission(["admin", "moderator"])
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
+
+        # Assert
+        self.assertFalse(result)
+
+    async def test_authorize_with_no_user(self):
+        """Test authorization fails with no user in context."""
+        # Arrange
+        permission = AnyRolePermission(["admin", "moderator"])
+        context = {}
+
+        # Act
+        result = await permission.authorize(context)
 
         # Assert
         self.assertFalse(result)
@@ -84,9 +112,10 @@ class TestAdminPermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "admin"
         permission = AdminPermission()
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
@@ -97,9 +126,22 @@ class TestAdminPermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "user"
         permission = AdminPermission()
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
+
+        # Assert
+        self.assertFalse(result)
+
+    async def test_authorize_with_no_user(self):
+        """Test authorization fails with no user in context."""
+        # Arrange
+        permission = AdminPermission()
+        context = {}
+
+        # Act
+        result = await permission.authorize(context)
 
         # Assert
         self.assertFalse(result)
@@ -114,9 +156,10 @@ class TestUserPermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "user"
         permission = UserPermission()
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
@@ -127,9 +170,10 @@ class TestUserPermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "admin"
         permission = UserPermission()
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
@@ -140,9 +184,10 @@ class TestUserPermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "moderator"
         permission = UserPermission()
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
@@ -153,9 +198,22 @@ class TestUserPermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "guest"
         permission = UserPermission()
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
+
+        # Assert
+        self.assertFalse(result)
+
+    async def test_authorize_with_no_user(self):
+        """Test authorization fails with no user in context."""
+        # Arrange
+        permission = UserPermission()
+        context = {}
+
+        # Act
+        result = await permission.authorize(context)
 
         # Assert
         self.assertFalse(result)
@@ -165,103 +223,106 @@ class TestSelfOrAdminPermission(unittest.IsolatedAsyncioTestCase):
     """Test cases for SelfOrAdminPermission."""
 
     async def test_authorize_admin_user(self):
-        """Test authorization succeeds for admin user."""
+        """Test authorization succeeds for admin user regardless of resource."""
         # Arrange
         user = MagicMock(spec=User)
         user.role = "admin"
-        user.id = "user123"
+        user.id = "admin123"
         permission = SelfOrAdminPermission()
+        context = {"user": user}
 
         # Act
-        result = await permission.authorize(user)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
 
     async def test_authorize_no_resource(self):
-        """Test authorization succeeds when no resource is specified."""
+        """Test authorization succeeds when no resource is provided."""
         # Arrange
         user = MagicMock(spec=User)
         user.role = "user"
         user.id = "user123"
         permission = SelfOrAdminPermission()
+        context = {"user": user, "resource": None}
 
         # Act
-        result = await permission.authorize(user, resource=None)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
 
     async def test_authorize_user_owns_resource_by_user_id(self):
-        """Test authorization succeeds when user owns resource (user_id)."""
+        """Test authorization succeeds when user owns resource by user_id."""
         # Arrange
         user = MagicMock(spec=User)
         user.role = "user"
         user.id = "user123"
-
         resource = MagicMock()
         resource.user_id = "user123"
-
         permission = SelfOrAdminPermission()
+        context = {"user": user, "resource": resource}
 
         # Act
-        result = await permission.authorize(user, resource)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
 
     async def test_authorize_user_owns_resource_by_email(self):
-        """Test authorization succeeds when user owns resource (email)."""
+        """Test authorization succeeds when user owns resource by email."""
         # Arrange
         user = MagicMock(spec=User)
         user.role = "user"
         user.id = "user123"
-        user.email = "test@example.com"
-
-        # Create resource that only has email, not user_id
-        resource = type("Resource", (), {"email": "test@example.com"})()
-
+        user.email = "user@example.com"
+        resource = MagicMock()
+        resource.email = "user@example.com"
+        # Remove user_id to test email check
+        del resource.user_id
         permission = SelfOrAdminPermission()
+        context = {"user": user, "resource": resource}
 
         # Act
-        result = await permission.authorize(user, resource)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
 
     async def test_authorize_user_owns_resource_by_owner_id(self):
-        """Test authorization succeeds when user owns resource (owner_id)."""
+        """Test authorization succeeds when user owns resource by owner_id."""
         # Arrange
         user = MagicMock(spec=User)
         user.role = "user"
         user.id = "user123"
-
-        # Create resource that only has owner_id, not user_id or email
-        resource = type("Resource", (), {"owner_id": "user123"})()
-
+        resource = MagicMock()
+        resource.owner_id = "user123"
+        # Remove user_id and email to test owner_id check
+        del resource.user_id
+        del resource.email
         permission = SelfOrAdminPermission()
+        context = {"user": user, "resource": resource}
 
         # Act
-        result = await permission.authorize(user, resource)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertTrue(result)
 
     async def test_authorize_user_does_not_own_resource(self):
-        """Test authorization fails when user doesn't own resource."""
+        """Test authorization fails when user does not own resource."""
         # Arrange
         user = MagicMock(spec=User)
         user.role = "user"
         user.id = "user123"
-        user.email = "test@example.com"
-
+        user.email = "user@example.com"
         resource = MagicMock()
-        resource.user_id = "otheruser456"
-
+        resource.user_id = "other_user456"
         permission = SelfOrAdminPermission()
+        context = {"user": user, "resource": resource}
 
         # Act
-        result = await permission.authorize(user, resource)
+        result = await permission.authorize(context)
 
         # Assert
         self.assertFalse(result)
@@ -272,14 +333,28 @@ class TestSelfOrAdminPermission(unittest.IsolatedAsyncioTestCase):
         user = MagicMock(spec=User)
         user.role = "user"
         user.id = "user123"
-
-        # Create resource with no ownership attributes
-        resource = type("Resource", (), {})()
-
+        resource = MagicMock()
+        # Remove all ownership attributes
+        del resource.user_id
+        del resource.email
+        del resource.owner_id
         permission = SelfOrAdminPermission()
+        context = {"user": user, "resource": resource}
 
         # Act
-        result = await permission.authorize(user, resource)
+        result = await permission.authorize(context)
+
+        # Assert
+        self.assertFalse(result)
+
+    async def test_authorize_with_no_user(self):
+        """Test authorization fails with no user in context."""
+        # Arrange
+        permission = SelfOrAdminPermission()
+        context = {}
+
+        # Act
+        result = await permission.authorize(context)
 
         # Assert
         self.assertFalse(result)

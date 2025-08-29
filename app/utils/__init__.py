@@ -1,14 +1,7 @@
 # Utils package initialization
 
-from .authorize import (
-    check_all_permissions,
-    check_any_permission,
-    check_permission,
-    require_all_permissions,
-    require_any_permission,
-    require_permission,
-)
-from .permission import Permission
+from .authorize import authorize
+from .permission import Permission, PermissionContext
 from .permissions import (
     AdminPermission,
     AnyRolePermission,
@@ -18,13 +11,9 @@ from .permissions import (
 )
 
 __all__ = [
-    "check_permission",
-    "require_permission",
-    "check_any_permission",
-    "check_all_permissions",
-    "require_any_permission",
-    "require_all_permissions",
+    "authorize",
     "Permission",
+    "PermissionContext",
     "RolePermission",
     "AnyRolePermission",
     "AdminPermission",

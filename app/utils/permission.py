@@ -3,19 +3,21 @@ from typing import Any
 
 from app.models.user import User
 
+# Python 3.12 generic syntax for PermissionContext
+type PermissionContext[T] = dict[str, T]
 
-class Permission(ABC):
+
+class Permission[T](ABC):
     """Abstract base class for permission checking."""
 
     @abstractmethod
-    async def authorize(self, user: User, resource: Any = None) -> bool:
-        """Check if user has permission to access the resource.
+    async def authorize(self, context: PermissionContext[T]) -> bool:
+        """Check if permission is granted based on the context.
 
         Args:
-            user: The user to check permissions for
-            resource: Optional resource being accessed
+            context: The permission context containing user and optional resource
 
         Returns:
-            True if user has permission, False otherwise
+            True if permission is granted, False otherwise
         """
         pass

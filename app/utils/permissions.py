@@ -1,10 +1,10 @@
 from typing import Any, List
 
 from app.models.user import User
-from app.utils.permission import Permission
+from app.utils.permission import Permission, PermissionContext
 
 
-class RolePermission(Permission):
+class RolePermission(Permission[Any]):
     """Permission based on user role."""
 
     def __init__(self, required_role: str):
@@ -15,20 +15,22 @@ class RolePermission(Permission):
         """
         self.required_role = required_role
 
-    async def authorize(self, user: User, resource: Any = None) -> bool:
+    async def authorize(self, context: PermissionContext[Any]) -> bool:
         """Check if user has the required role.
 
         Args:
-            user: The user to check permissions for
-            resource: Optional resource being accessed (not used)
+            context: Permission context containing user and optional resource
 
         Returns:
             True if user has the required role, False otherwise
         """
+        user = context.get("user")
+        if not user:
+            return False
         return user.role == self.required_role
 
 
-class AnyRolePermission(Permission):
+class AnyRolePermission(Permission[Any]):
     """Permission based on having any of the specified roles."""
 
     def __init__(self, allowed_roles: List[str]):
@@ -39,68 +41,78 @@ class AnyRolePermission(Permission):
         """
         self.allowed_roles = allowed_roles
 
-    async def authorize(self, user: User, resource: Any = None) -> bool:
+    async def authorize(self, context: PermissionContext[Any]) -> bool:
         """Check if user has any of the allowed roles.
 
         Args:
-            user: The user to check permissions for
-            resource: Optional resource being accessed (not used)
+            context: Permission context containing user and optional resource
 
         Returns:
             True if user has any of the allowed roles, False otherwise
         """
+        user = context.get("user")
+        if not user:
+            return False
         return user.role in self.allowed_roles
 
 
-class AdminPermission(Permission):
+class AdminPermission(Permission[Any]):
     """Permission for admin users only."""
 
-    async def authorize(self, user: User, resource: Any = None) -> bool:
+    async def authorize(self, context: PermissionContext[Any]) -> bool:
         """Check if user is admin.
 
         Args:
-            user: The user to check permissions for
-            resource: Optional resource being accessed (not used)
+            context: Permission context containing user and optional resource
 
         Returns:
             True if user is admin, False otherwise
         """
+        user = context.get("user")
+        if not user:
+            return False
         return user.role == "admin"
 
 
-class UserPermission(Permission):
+class UserPermission(Permission[Any]):
     """Permission for regular users and above."""
 
-    async def authorize(self, user: User, resource: Any = None) -> bool:
+    async def authorize(self, context: PermissionContext[Any]) -> bool:
         """Check if user has at least user role.
 
         Args:
-            user: The user to check permissions for
-            resource: Optional resource being accessed (not used)
+            context: Permission context containing user and optional resource
 
         Returns:
             True if user has user role or higher, False otherwise
         """
+        user = context.get("user")
+        if not user:
+            return False
         return user.role in ["user", "admin", "moderator"]
 
 
-class SelfOrAdminPermission(Permission):
+class SelfOrAdminPermission(Permission[Any]):
     """Permission for user to access own resources or admin to access any."""
 
-    async def authorize(self, user: User, resource: Any = None) -> bool:
+    async def authorize(self, context: PermissionContext[Any]) -> bool:
         """Check if user can access the resource.
 
         Args:
-            user: The user to check permissions for
-            resource: Resource being accessed (expected to have user_id or email)
+            context: Permission context containing user and optional resource
 
         Returns:
             True if user is admin or owns the resource, False otherwise
         """
+        user = context.get("user")
+        if not user:
+            return False
+
         # Admin can access everything
         if user.role == "admin":
             return True
 
+        resource = context.get("resource")
         # If no resource specified, allow access
         if resource is None:
             return True
