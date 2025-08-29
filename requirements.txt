@@ -6,3 +6,5 @@ pydantic
 pydantic-settings
 beanie[srv]
 passlib[bcrypt]
+cloudinary>=1.36.0
+python-multipart>=0.0.6
