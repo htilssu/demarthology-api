@@ -16,10 +16,6 @@ class RegisterUC(UseCase):
     async def action(self, *args, **kwargs):
         data: RegisterRequest = args[0]
 
-        # Check if passwords match
-        if data.password != data.confirm_password:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Passwords do not match")
-
         # Check if user already exists
         if await self._user_service.check_user_exist(str(data.email)):
             raise HTTPException(
@@ -37,7 +33,6 @@ class RegisterUC(UseCase):
             first_name=data.first_name,
             last_name=data.last_name,
             dob=data.dob,
-            role=data.role,  # Include role from request
         )
 
         # Save user to database through service
