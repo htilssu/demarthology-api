@@ -86,11 +86,11 @@ class SelfOrAdminPermission(MockPermission):
             return True
 
         # Check if user owns the resource
-        if hasattr(context.obj, "user_id"):
+        if hasattr(context.obj, 'user_id'):
             return context.obj.user_id == context.user.id
-        elif hasattr(context.obj, "email"):
+        elif hasattr(context.obj, 'email'):
             return context.obj.email == context.user.email
-        elif hasattr(context.obj, "owner_id"):
+        elif hasattr(context.obj, 'owner_id'):
             return context.obj.owner_id == context.user.id
 
         # Unknown resource type

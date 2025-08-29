@@ -60,9 +60,9 @@ jobs:
           commit-message: 'Auto-fix: Apply code formatting and import sorting'
           token: ${{ secrets.FGTOKEN }}
 
-      - name: Run tests with unittest
+      - name: Run tests with pytest
         run: |
-          python -m unittest discover tests -v
+          python -m pytest tests -v
 
       - name: Test application startup
         run: |

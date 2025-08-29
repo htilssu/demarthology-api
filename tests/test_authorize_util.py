@@ -38,7 +38,6 @@ class MockPermission:
 
 class BasicContext(MockPermissionContext):
     """Basic context implementation for testing."""
-
     pass
 
 

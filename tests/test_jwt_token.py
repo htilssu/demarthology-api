@@ -3,7 +3,7 @@ Tests for JWT token utility functions.
 """
 
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 import jwt
@@ -47,8 +47,8 @@ class TestJWTTokenUtils(unittest.TestCase):
     def test_verify_token_expired(self):
         """Test that verify_token returns None for expired tokens."""
         # Create an expired token manually
-        past_time = datetime.utcnow() - timedelta(hours=1)
-        payload = {"user_data": self.test_user_data, "exp": past_time, "iat": datetime.utcnow() - timedelta(hours=2)}
+        past_time = datetime.now(timezone.utc) - timedelta(hours=1)
+        payload = {"user_data": self.test_user_data, "exp": past_time, "iat": datetime.now(timezone.utc) - timedelta(hours=2)}
         expired_token = jwt.encode(payload, setting.JWT_SECRET, algorithm=setting.JWT_ALGORITHM)
 
         result = verify_token(expired_token)
