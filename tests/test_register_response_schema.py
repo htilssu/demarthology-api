@@ -17,7 +17,12 @@ class TestRegisterResponseSchema(unittest.TestCase):
         user_info = UserInfo(email="test@example.com", first_name="John", last_name="Doe", role="user")
 
         # Act
-        response = RegisterResponse(success=True, message="Registration successful", user=user_info)
+        response = RegisterResponse(
+            success=True, 
+            message="Registration successful", 
+            user=user_info,
+            access_token="sample_jwt_token"
+        )
 
         # Assert
         self.assertTrue(response.success)
@@ -26,12 +31,19 @@ class TestRegisterResponseSchema(unittest.TestCase):
         self.assertEqual(response.user.first_name, "John")
         self.assertEqual(response.user.last_name, "Doe")
         self.assertEqual(response.user.role, "user")
+        self.assertEqual(response.access_token, "sample_jwt_token")
+        self.assertEqual(response.token_type, "bearer")
 
     def test_register_response_serialization(self):
         """Test that RegisterResponse can be serialized to JSON for middleware."""
         # Arrange
         user_info = UserInfo(email="jane@example.com", first_name="Jane", last_name="Smith", role="user")
-        response = RegisterResponse(success=True, message="User registered successfully", user=user_info)
+        response = RegisterResponse(
+            success=True, 
+            message="User registered successfully", 
+            user=user_info,
+            access_token="example_jwt_token_12345"
+        )
 
         # Act
         serialized = response.model_dump()
@@ -46,6 +58,8 @@ class TestRegisterResponseSchema(unittest.TestCase):
                 "last_name": "Smith",
                 "role": "user",
             },
+            "access_token": "example_jwt_token_12345",
+            "token_type": "bearer",
         }
         self.assertEqual(serialized, expected)
 
