@@ -1,0 +1,21 @@
+services:
+#  server:
+#    container_name: server
+#    image: htilssu/med-api
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    volumes:
+#      - "./:/app"
+#    ports:
+#      - "8000:8000"
+#      - "5680:5680"
+#    environment:
+#      - MONGO_URI=mongodb://root:root@mongodb
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27017:27017"

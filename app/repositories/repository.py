@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Generic, TypeVar, Type
+from typing import Generic, Type, TypeVar
 
 from app.errors.not_found import NotFoundException
 from app.models.base import Base
@@ -40,5 +40,7 @@ class Repository(ABC, Generic[T]):
 
 class PaginatedRepository(Repository[T], Generic[T]):
     async def get_all(self, skip: int = 0, limit: int = 100) -> PaginatedData[T]:
-        document_list = await self.document_class.find_all().skip(skip).limit(limit).to_list()
+        document_list = (
+            await self.document_class.find_all().skip(skip).limit(limit).to_list()
+        )
         return PaginatedData(document_list)

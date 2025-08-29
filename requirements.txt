@@ -3,6 +3,11 @@ uvicorn
 beanie
 fastapi
 pydantic
+pydantic[email]
 pydantic-settings
 beanie[srv]
 passlib[bcrypt]
+PyJWT
+httpx
+cloudinary>=1.36.0
+python-multipart>=0.0.6
