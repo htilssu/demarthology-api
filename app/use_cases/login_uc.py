@@ -18,25 +18,15 @@ class LoginUC(UseCase):
         user = await self._user_repository.find_by_email(data.email)
 
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid credentials"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
         # Verify password
         if not verify_password(data.password, user.password):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid credentials"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
         # Return success response
         return {
             "success": True,
             "message": "Login successful",
-            "user": {
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name
-            }
+            "user": {"email": user.email, "first_name": user.first_name, "last_name": user.last_name},
         }

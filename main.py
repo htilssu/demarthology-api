@@ -18,6 +18,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], )
+    allow_origins=["*"],
+)
 
 register_router(app)
