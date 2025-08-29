@@ -6,6 +6,7 @@ from app.schemas.register_request import RegisterRequest
 from app.schemas.register_response import RegisterResponse
 from app.services.user_service import UserService
 from app.use_cases.usecase import UseCase
+from app.utils.jwt import JWTUtils
 from app.utils.password import hash_password
 
 
@@ -38,11 +39,20 @@ class RegisterUC(UseCase):
         # Save user to database through service
         saved_user = await self._user_service.save_user(new_user)
 
-        # Return success response
+        # Create access token (same logic as LoginUC)
+        token_data = {"email": saved_user.email, "user_id": str(saved_user.id)}
+        access_token = JWTUtils.create_access_token(token_data)
+
+        # Return success response with token
         user_info = UserInfo(
             email=saved_user.email,
             first_name=saved_user.first_name,
             last_name=saved_user.last_name,
             role=saved_user.role,  # Include role in response
         )
-        return RegisterResponse(success=True, message="Registration successful", user=user_info)
+        return RegisterResponse(
+            success=True,
+            message="Registration successful",
+            user=user_info,
+            access_token=access_token,
+        )

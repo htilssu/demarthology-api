@@ -4,6 +4,7 @@ from app.schemas.forgot_password_request import ForgotPasswordRequest
 from app.schemas.login_request import LoginRequest
 from app.schemas.login_response import LoginResponse
 from app.schemas.register_request import RegisterRequest
+from app.schemas.register_response import RegisterResponse
 from app.schemas.reset_password_request import ResetPasswordRequest
 from app.use_cases.forgot_password_uc import ForgotPasswordUC
 from app.use_cases.login_uc import LoginUC
@@ -20,7 +21,7 @@ async def login(data: LoginRequest, uc: UseCase = Depends(LoginUC)):
     return await uc.action(data)
 
 
-@router.post("/register", summary="Đăng ký")
+@router.post("/register", summary="Đăng ký", response_model=RegisterResponse)
 async def register(data: RegisterRequest, uc: UseCase = Depends(RegisterUC)):
     return await uc.action(data)
 
