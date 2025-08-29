@@ -5,6 +5,7 @@ from app.repositories.user_repository import UserRepository
 from app.schemas.login_request import LoginRequest
 from app.use_cases.usecase import UseCase
 from app.utils.password import verify_password
+from app.utils.jwt_token import generate_token
 
 
 class LoginUC(UseCase):
@@ -30,13 +31,21 @@ class LoginUC(UseCase):
                 detail="Invalid credentials"
             )
 
-        # Return success response
+        # Prepare user data for token
+        user_data = {
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name
+        }
+        
+        # Generate JWT token
+        access_token = generate_token(user_data)
+
+        # Return success response with token
         return {
             "success": True,
             "message": "Login successful",
-            "user": {
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name
-            }
+            "user": user_data,
+            "access_token": access_token,
+            "token_type": "bearer"
         }
