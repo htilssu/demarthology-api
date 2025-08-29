@@ -8,7 +8,14 @@ from unittest.mock import MagicMock
 from fastapi import HTTPException
 
 from app.models.user import User
-from app.utils.authorize import AuthorizeUtil
+from app.utils.authorize import (
+    check_all_permissions,
+    check_any_permission,
+    check_permission,
+    require_all_permissions,
+    require_any_permission,
+    require_permission,
+)
 from app.utils.permission import Permission
 
 
@@ -38,7 +45,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         permission = MockPermission(should_authorize=True)
 
         # Act
-        result = await AuthorizeUtil.check_permission(self.user, permission)
+        result = await check_permission(self.user, permission)
 
         # Assert
         self.assertTrue(result)
@@ -49,7 +56,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         permission = MockPermission(should_authorize=False)
 
         # Act
-        result = await AuthorizeUtil.check_permission(self.user, permission)
+        result = await check_permission(self.user, permission)
 
         # Assert
         self.assertFalse(result)
@@ -60,7 +67,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         permission = MockPermission(should_authorize=True)
 
         # Act & Assert (should not raise exception)
-        await AuthorizeUtil.require_permission(self.user, permission)
+        await require_permission(self.user, permission)
 
     async def test_require_permission_denies_access(self):
         """Test require_permission raises HTTPException when permission denies."""
@@ -69,7 +76,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
 
         # Act & Assert
         with self.assertRaises(HTTPException) as context:
-            await AuthorizeUtil.require_permission(self.user, permission)
+            await require_permission(self.user, permission)
 
         self.assertEqual(context.exception.status_code, 403)
         self.assertEqual(context.exception.detail, "Insufficient permissions")
@@ -84,7 +91,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         ]
 
         # Act
-        result = await AuthorizeUtil.check_any_permission(self.user, permissions)
+        result = await check_any_permission(self.user, permissions)
 
         # Assert
         self.assertTrue(result)
@@ -99,7 +106,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         ]
 
         # Act
-        result = await AuthorizeUtil.check_any_permission(self.user, permissions)
+        result = await check_any_permission(self.user, permissions)
 
         # Assert
         self.assertFalse(result)
@@ -114,7 +121,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         ]
 
         # Act
-        result = await AuthorizeUtil.check_all_permissions(self.user, permissions)
+        result = await check_all_permissions(self.user, permissions)
 
         # Assert
         self.assertTrue(result)
@@ -129,7 +136,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         ]
 
         # Act
-        result = await AuthorizeUtil.check_all_permissions(self.user, permissions)
+        result = await check_all_permissions(self.user, permissions)
 
         # Assert
         self.assertFalse(result)
@@ -143,7 +150,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         ]
 
         # Act & Assert (should not raise exception)
-        await AuthorizeUtil.require_any_permission(self.user, permissions)
+        await require_any_permission(self.user, permissions)
 
     async def test_require_any_permission_denies_access(self):
         """Test require_any_permission raises HTTPException when no permissions allow."""
@@ -155,7 +162,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
 
         # Act & Assert
         with self.assertRaises(HTTPException) as context:
-            await AuthorizeUtil.require_any_permission(self.user, permissions)
+            await require_any_permission(self.user, permissions)
 
         self.assertEqual(context.exception.status_code, 403)
         self.assertEqual(context.exception.detail, "Insufficient permissions")
@@ -169,7 +176,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
         ]
 
         # Act & Assert (should not raise exception)
-        await AuthorizeUtil.require_all_permissions(self.user, permissions)
+        await require_all_permissions(self.user, permissions)
 
     async def test_require_all_permissions_denies_access(self):
         """Test require_all_permissions raises HTTPException when any permission denies."""
@@ -181,7 +188,7 @@ class TestAuthorizeUtil(unittest.IsolatedAsyncioTestCase):
 
         # Act & Assert
         with self.assertRaises(HTTPException) as context:
-            await AuthorizeUtil.require_all_permissions(self.user, permissions)
+            await require_all_permissions(self.user, permissions)
 
         self.assertEqual(context.exception.status_code, 403)
         self.assertEqual(context.exception.detail, "Insufficient permissions")
