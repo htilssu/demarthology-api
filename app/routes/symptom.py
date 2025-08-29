@@ -12,7 +12,8 @@ from app.use_cases.usecase import UseCase
 
 router = APIRouter(tags=["Symptoms"])
 
-#todo: add auth
+
+# todo: add auth
 @router.post("", summary="Tạo triệu chứng")
 async def create_symptom(data: SymptomCreate, uc: UseCase = Depends(CreateSymptomUC)):
     return await uc.action(data)
@@ -31,12 +32,14 @@ async def list_symptoms(
 async def get_symptom(id: str, uc: UseCase = Depends(GetSymptomUC)):
     return await uc.action(id)
 
-#todo: add auth
+
+# todo: add auth
 @router.put("/{id}", summary="Cập nhật triệu chứng")
 async def update_symptom(id: str, data: SymptomUpdate, uc: UseCase = Depends(UpdateSymptomUC)):
     return await uc.action(id, data)
 
-#todo: add auth
+
+# todo: add auth
 @router.delete("/{id}", summary="Xóa triệu chứng")
 async def delete_symptom(id: str, uc: UseCase = Depends(DeleteSymptomUC)):
     return await uc.action(id)
