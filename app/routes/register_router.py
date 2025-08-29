@@ -4,4 +4,4 @@ from app.routes import auth
 
 
 def register_router(app: FastAPI) -> None:
-    app.include_router(auth.router)
+    app.include_router(auth.router, prefix="/auth")
