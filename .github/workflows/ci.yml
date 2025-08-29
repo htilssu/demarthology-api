@@ -50,17 +50,10 @@ jobs:
       run: |
         isort .
 
-    - name: Commit and push formatting changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add .
-        if git diff --staged --quiet; then
-          echo "No formatting changes to commit"
-        else
-          git commit -m "Auto-fix: Apply code formatting and import sorting"
-          git push
-        fi
+    - name: Github Pushy
+      uses: htilssu/github_push_action@v0
+      with:
+        commit-message: 'Auto-fix: Apply code formatting and import sorting'
 
     - name: Run tests with unittest
       run: |
