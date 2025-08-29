@@ -29,11 +29,8 @@ class RegisterUC(UseCase):
                 detail="User with this email already exists",
             )
 
-        # Get or create the role
-        role = await self._role_service.get_role_by_name(data.role)
-        if not role:
-            # If role doesn't exist, use default 'user' role
-            role = await self._role_service.get_or_create_default_role()
+        # Get the default 'user' role for registration
+        role = await self._role_service.get_or_create_default_role()
 
         # Hash the password
         hashed_password = hash_password(data.password)

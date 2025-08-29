@@ -1,6 +1,5 @@
 import re
 from datetime import date, datetime
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr, field_validator
 
@@ -13,7 +12,6 @@ class RegisterRequest(BaseModel):
     first_name: str
     last_name: str
     dob: datetime
-    role: Optional[str] = "user"
 
     # Validate password
     @field_validator("password")

@@ -38,10 +38,10 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         # Mock that user doesn't exist
         self.mock_user_service.check_user_exist.return_value = False
 
-        # Mock role service
+        # Mock role service to return default role
         mock_role = MagicMock()
         mock_role.name = "user"
-        self.mock_role_service.get_role_by_name.return_value = mock_role
+        self.mock_role_service.get_or_create_default_role.return_value = mock_role
 
         # Mock the User creation and save_user method
         mock_user = MagicMock(spec=User)
@@ -65,7 +65,7 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(result.user.role, "user")
             self.mock_user_service.check_user_exist.assert_called_once_with("newuser@example.com")
             self.mock_user_service.save_user.assert_called_once_with(mock_user)
-            self.mock_role_service.get_role_by_name.assert_called_once_with("user")
+            self.mock_role_service.get_or_create_default_role.assert_called_once()
 
     async def test_registration_user_already_exists(self):
         """Test registration fails when user already exists."""
@@ -103,10 +103,10 @@ class TestRegisterUC(unittest.IsolatedAsyncioTestCase):
         # Mock that user doesn't exist
         self.mock_user_service.check_user_exist.return_value = False
 
-        # Mock role service
+        # Mock role service to return default role
         mock_role = MagicMock()
         mock_role.name = "user"
-        self.mock_role_service.get_role_by_name.return_value = mock_role
+        self.mock_role_service.get_or_create_default_role.return_value = mock_role
 
         # Mock the User creation and capture constructor arguments
         created_users = []
