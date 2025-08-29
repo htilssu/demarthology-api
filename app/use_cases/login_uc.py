@@ -20,11 +20,17 @@ class LoginUC(UseCase):
         user = await self._user_service.find_by_email(data.email)
 
         if not user:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                detail="Tài khoản không tồn tại. Vui lòng đăng ký trước khi đăng nhập."
+            )
 
         # Verify password
         if not verify_password(data.password, user.password):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                detail="Mật khẩu không đúng. Vui lòng thử lại."
+            )
 
         # Create access token
         token_data = {"email": user.email, "user_id": str(user.id)}
@@ -39,7 +45,7 @@ class LoginUC(UseCase):
         )
         return LoginResponse(
             success=True,
-            message="Login successful",
+            message="Đăng nhập thành công",
             user=user_info,
             access_token=access_token,
         )
