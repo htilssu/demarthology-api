@@ -12,7 +12,7 @@ from app.models.user import User
 # Define permission context base class for testing
 class MockPermissionContext:
     """Mock permission context base class."""
-    
+
     def __init__(self, user: User = None, obj: Any = None):
         self.user = user
         self.obj = obj
@@ -21,7 +21,7 @@ class MockPermissionContext:
 # Define permission base class for testing
 class MockPermission:
     """Mock permission base class."""
-    
+
     async def authorize(self, context: MockPermissionContext) -> bool:
         """Override in subclasses."""
         raise NotImplementedError
@@ -30,10 +30,10 @@ class MockPermission:
 # Concrete permission implementations
 class RolePermission(MockPermission):
     """Role-based permission."""
-    
+
     def __init__(self, required_role: str):
         self.required_role = required_role
-    
+
     async def authorize(self, context: MockPermissionContext) -> bool:
         if not context.user:
             return False
@@ -42,10 +42,10 @@ class RolePermission(MockPermission):
 
 class AnyRolePermission(MockPermission):
     """Any of multiple roles permission."""
-    
+
     def __init__(self, allowed_roles: List[str]):
         self.allowed_roles = allowed_roles
-    
+
     async def authorize(self, context: MockPermissionContext) -> bool:
         if not context.user:
             return False
@@ -54,7 +54,7 @@ class AnyRolePermission(MockPermission):
 
 class AdminPermission(MockPermission):
     """Admin-only permission."""
-    
+
     async def authorize(self, context: MockPermissionContext) -> bool:
         if not context.user:
             return False
@@ -63,7 +63,7 @@ class AdminPermission(MockPermission):
 
 class UserPermission(MockPermission):
     """User permission (any valid user role)."""
-    
+
     async def authorize(self, context: MockPermissionContext) -> bool:
         if not context.user:
             return False
@@ -72,34 +72,34 @@ class UserPermission(MockPermission):
 
 class SelfOrAdminPermission(MockPermission):
     """Self or admin permission."""
-    
+
     async def authorize(self, context: MockPermissionContext) -> bool:
         if not context.user:
             return False
-        
+
         # Admin can access everything
         if context.user.role == "admin":
             return True
-        
+
         # If no resource, allow access
         if not context.obj:
             return True
-        
+
         # Check if user owns the resource
-        if hasattr(context.obj, 'user_id'):
+        if hasattr(context.obj, "user_id"):
             return context.obj.user_id == context.user.id
-        elif hasattr(context.obj, 'email'):
+        elif hasattr(context.obj, "email"):
             return context.obj.email == context.user.email
-        elif hasattr(context.obj, 'owner_id'):
+        elif hasattr(context.obj, "owner_id"):
             return context.obj.owner_id == context.user.id
-        
+
         # Unknown resource type
         return False
 
 
 class CanEditRole(MockPermission):
     """Can edit role permission."""
-    
+
     async def authorize(self, context: MockPermissionContext) -> bool:
         if not context.user:
             return False
