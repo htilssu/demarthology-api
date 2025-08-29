@@ -12,7 +12,7 @@ from app.models.user import User
 from app.utils.authorize import BasicContext, Permission, PermissionContext, authorize
 
 
-class MockPermissionContext(PermissionContext[Any]):
+class MockPermissionContext(PermissionContext):
     """Mock permission context for testing."""
 
     def __init__(self, user: User | None = None, obj: Any = None):
@@ -26,13 +26,13 @@ class MockPermissionContext(PermissionContext[Any]):
         return self.obj
 
 
-class MockPermission(Permission[Any]):
+class MockPermission(Permission):
     """Mock permission for testing."""
 
     def __init__(self, should_authorize: bool = True):
         self.should_authorize = should_authorize
 
-    async def authorize(self, context: PermissionContext[Any]) -> bool:
+    async def authorize(self, context: PermissionContext) -> bool:
         return self.should_authorize
 
 

@@ -413,5 +413,130 @@ class TestCanEditRole(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(result)
 
 
+class TestRegistrationSpecificPermissions(unittest.IsolatedAsyncioTestCase):
+    """Test cases for permissions relevant to registration scenarios."""
+
+    async def test_user_permission_allows_newly_registered_user(self):
+        """Test that UserPermission allows users with 'user' role."""
+        # Arrange - simulate a newly registered user
+        user = MagicMock(spec=User)
+        user.role = "user"
+        user.email = "newuser@example.com"
+        user.id = "user123"
+        
+        permission = UserPermission()
+        context = BasicContext(user=user)
+
+        # Act
+        result = await permission.authorize(context)
+
+        # Assert
+        self.assertTrue(result)
+
+    async def test_role_permission_for_registration_scenarios(self):
+        """Test RolePermission with various registration scenarios."""
+        # Test cases for different roles
+        test_cases = [
+            ("user", "user", True),      # User role matches
+            ("admin", "admin", True),    # Admin role matches
+            ("moderator", "moderator", True),  # Moderator role matches
+            ("user", "admin", False),    # User tries to access admin
+            ("guest", "user", False),    # Invalid role
+        ]
+
+        for user_role, required_role, expected in test_cases:
+            with self.subTest(user_role=user_role, required_role=required_role):
+                # Arrange
+                user = MagicMock(spec=User)
+                user.role = user_role
+                user.id = f"{user_role}_id"
+                
+                permission = RolePermission(required_role)
+                context = BasicContext(user=user)
+
+                # Act
+                result = await permission.authorize(context)
+
+                # Assert
+                self.assertEqual(result, expected)
+
+    async def test_any_role_permission_for_registration_access(self):
+        """Test AnyRolePermission for features accessible to multiple roles."""
+        # Arrange - test that registered users can access features available to multiple roles
+        permission = AnyRolePermission(["user", "admin", "moderator"])
+        
+        test_roles = ["user", "admin", "moderator", "guest", "invalid"]
+        expected_results = [True, True, True, False, False]
+
+        for role, expected in zip(test_roles, expected_results):
+            with self.subTest(role=role):
+                user = MagicMock(spec=User)
+                user.role = role
+                context = BasicContext(user=user)
+
+                # Act
+                result = await permission.authorize(context)
+
+                # Assert
+                self.assertEqual(result, expected)
+
+    async def test_self_or_admin_permission_for_user_data_access(self):
+        """Test SelfOrAdminPermission for newly registered users accessing their data."""
+        # Arrange - newly registered user
+        user = MagicMock(spec=User)
+        user.role = "user"
+        user.id = "user123"
+        user.email = "user@example.com"
+
+        permission = SelfOrAdminPermission()
+
+        # Test 1: User accessing their own data (by user_id)
+        user_data = MagicMock()
+        user_data.user_id = "user123"
+        context = ResourceOwnerContext(user=user, obj=user_data)
+        
+        result = await permission.authorize(context)
+        self.assertTrue(result)
+
+        # Test 2: User accessing their own data (by email)
+        user_profile = MagicMock()
+        user_profile.email = "user@example.com"
+        del user_profile.user_id  # Remove user_id to test email matching
+        context = ResourceOwnerContext(user=user, obj=user_profile)
+        
+        result = await permission.authorize(context)
+        self.assertTrue(result)
+
+        # Test 3: User trying to access another user's data
+        other_user_data = MagicMock()
+        other_user_data.user_id = "other_user456"
+        context = ResourceOwnerContext(user=user, obj=other_user_data)
+        
+        result = await permission.authorize(context)
+        self.assertFalse(result)
+
+    async def test_permission_with_no_authentication(self):
+        """Test that permissions properly handle unauthenticated scenarios."""
+        permissions = [
+            UserPermission(),
+            AdminPermission(),
+            RolePermission("user"),
+            AnyRolePermission(["user", "admin"]),
+            SelfOrAdminPermission(),
+            CanEditRole(),
+        ]
+
+        for permission in permissions:
+            with self.subTest(permission=permission.__class__.__name__):
+                # Arrange - no authenticated user
+                context = BasicContext(user=None)
+
+                # Act
+                result = await permission.authorize(context)
+
+                # Assert - all permissions should deny access without authentication
+                self.assertFalse(result)
+
+
 if __name__ == "__main__":
     unittest.main()
