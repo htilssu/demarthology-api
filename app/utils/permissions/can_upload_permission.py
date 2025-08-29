@@ -10,4 +10,6 @@ class CanUploadPermission(UploadManageContext):
     """Permission schema for user uploading."""
 
     async def authorize(self, context: UploadManageContext) -> bool:
-        if
+        # TODO:implement
+
+        return True
