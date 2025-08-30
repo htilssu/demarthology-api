@@ -12,21 +12,21 @@ class TestForgotPasswordUC:
     """Test cases for ForgotPasswordUC."""
 
     @pytest.fixture
-    def mock_user_service(self):
-        """Create a mock user service."""
+    def mock_forgot_password_service(self):
+        """Create a mock forgot password service."""
         return Mock()
 
     @pytest.fixture
-    def forgot_password_uc(self, mock_user_service):
+    def forgot_password_uc(self, mock_forgot_password_service):
         """Create ForgotPasswordUC instance with mocked dependencies."""
-        return ForgotPasswordUC(user_service=mock_user_service)
+        return ForgotPasswordUC(forgot_password_service=mock_forgot_password_service)
 
     @pytest.mark.asyncio
-    async def test_forgot_password_user_exists(self, forgot_password_uc, mock_user_service):
+    async def test_forgot_password_user_exists(self, forgot_password_uc, mock_forgot_password_service):
         """Test forgot password when user exists."""
         # Arrange
         request = ForgotPasswordRequest(email="user@example.com")
-        mock_user_service.check_user_exist = AsyncMock(return_value=True)
+        mock_forgot_password_service.send_forgot_password_notification = AsyncMock(return_value=True)
 
         # Act
         response = await forgot_password_uc.action(request)
@@ -35,14 +35,17 @@ class TestForgotPasswordUC:
         assert isinstance(response, ForgotPasswordResponse)
         assert response.success is True
         assert "reset link has been sent" in response.message
-        mock_user_service.check_user_exist.assert_called_once_with("user@example.com")
+        mock_forgot_password_service.send_forgot_password_notification.assert_called_once_with(
+            email="user@example.com", 
+            notification_type="email"
+        )
 
     @pytest.mark.asyncio
-    async def test_forgot_password_user_not_exists(self, forgot_password_uc, mock_user_service):
+    async def test_forgot_password_user_not_exists(self, forgot_password_uc, mock_forgot_password_service):
         """Test forgot password when user doesn't exist."""
         # Arrange
         request = ForgotPasswordRequest(email="nonexistent@example.com")
-        mock_user_service.check_user_exist = AsyncMock(return_value=False)
+        mock_forgot_password_service.send_forgot_password_notification = AsyncMock(return_value=True)
 
         # Act
         response = await forgot_password_uc.action(request)
@@ -52,14 +55,17 @@ class TestForgotPasswordUC:
         assert response.success is True
         # Should return same message for security (don't reveal if email exists)
         assert "reset link has been sent" in response.message
-        mock_user_service.check_user_exist.assert_called_once_with("nonexistent@example.com")
+        mock_forgot_password_service.send_forgot_password_notification.assert_called_once_with(
+            email="nonexistent@example.com",
+            notification_type="email"
+        )
 
     @pytest.mark.asyncio
-    async def test_forgot_password_service_error(self, forgot_password_uc, mock_user_service):
-        """Test forgot password when user service throws error."""
+    async def test_forgot_password_service_error(self, forgot_password_uc, mock_forgot_password_service):
+        """Test forgot password when service throws error."""
         # Arrange
         request = ForgotPasswordRequest(email="user@example.com")
-        mock_user_service.check_user_exist = AsyncMock(side_effect=Exception("Database error"))
+        mock_forgot_password_service.send_forgot_password_notification = AsyncMock(side_effect=Exception("Service error"))
 
         # Act & Assert
         with pytest.raises(HTTPException) as exc_info:

@@ -58,3 +58,14 @@ class JWTUtils:
             )
         except jwt.InvalidTokenError:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid reset token")
+
+    @classmethod
+    def verify_reset_token(cls, token: str) -> Dict[str, Any] | None:
+        """Verify a password reset token and return payload if valid."""
+        try:
+            payload = jwt.decode(token, cls.SECRET_KEY, algorithms=[cls.ALGORITHM])
+            if payload.get("type") != "reset":
+                return None
+            return payload
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            return None
